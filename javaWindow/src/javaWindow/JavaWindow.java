@@ -23,12 +23,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+@SuppressWarnings("serial")
 public class JavaWindow extends JFrame{
 	
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
 	JLabel rightTxt;
+
 	public void drawMainWindow() {
 		// *** Create colors ***
 		Color darkGray = new Color(30,30,30);
@@ -36,8 +38,8 @@ public class JavaWindow extends JFrame{
 		// ***
 		
 		// *** Creates the JPanels and modifies them ***
-		welcometxt = new JLabel("Välkommen hit!");
-		rightTxt = new JLabel("Höger textelement");
+		welcometxt = new JLabel("VÃ¤lkommen hit!");
+		rightTxt = new JLabel("HÃ¶ger textelement");
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
 		JPanel topSide = new JPanel(new BorderLayout());
@@ -60,9 +62,9 @@ public class JavaWindow extends JFrame{
 		week.setBackground(gray);
 		day.setBackground(gray);
 		month.add(rightTxt);
-		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
-		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
-		UIManager.put("TabbedPane.foreground", Color.lightGray); //Ändrar färgen på texten till ljus grå
+		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sÃ¤tter tabbarna till hÃ¶gra sidan
+		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //FÃ¶rsÃ¶ker sÃ¤tta border color
+		UIManager.put("TabbedPane.foreground", Color.lightGray); //Ã„ndrar fÃ¤rgen pÃ¥ texten till ljus grÃ¥
 		UIManager.put("TabbedPane.opaque", true);
 		rightSide.setUI(new BasicTabbedPaneUI() {
 			   @Override
@@ -73,7 +75,7 @@ public class JavaWindow extends JFrame{
 			       shadow = new Color(255, 255, 255, 0);
 			       darkShadow = new Color(255, 255, 255, 0);
 			       focus = Color.gray;
-			       /*Ändrar färger på olika effekter*/
+			       /*Ã„ndrar fÃ¤rger pÃ¥ olika effekter*/
 			   }
 			});
 		// ***
@@ -81,7 +83,7 @@ public class JavaWindow extends JFrame{
 		// *** Adds components to the Frame ***
 		rightSide.addTab("Dag", day);
 		rightSide.addTab("Vecka", week);
-		rightSide.addTab("Månad", month);
+		rightSide.addTab("MÃ¥nad", month);
 		
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
@@ -91,10 +93,26 @@ public class JavaWindow extends JFrame{
 		setVisible(true);
 		db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+	
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		new JavaWindow().start();
 	}
+	
 	public void start() {
-		label = new JLabel("Användar-ID: ");
-		pwdLabel = new JLabel("Lösenord: ");
+		label = new JLabel("AnvÃ¤ndar-ID: ");
+		pwdLabel = new JLabel("LÃ¶senord: ");
 		JTextField txt = new JTextField();
 		JPasswordField pass = new JPasswordField();
 		JButton button = new JButton("Submit");
@@ -128,6 +146,7 @@ public class JavaWindow extends JFrame{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
+
 	public void db() {
 		try {
 			URL url = new URL("http://localhost/kalendersystem/kalendersystem.php");
@@ -147,25 +166,6 @@ public class JavaWindow extends JFrame{
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		new JavaWindow().start();
-	}
 
+	}
 }
