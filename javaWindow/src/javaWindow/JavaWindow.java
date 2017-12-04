@@ -38,8 +38,8 @@ public class JavaWindow extends JFrame{
 		// ***
 		
 		// *** Creates the JPanels and modifies them ***
-		welcometxt = new JLabel("VÃ¤lkommen hit!");
-		rightTxt = new JLabel("HÃ¶ger textelement");
+		welcometxt = new JLabel("Välkommen hit!");
+		rightTxt = new JLabel("Höger textelement");
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
 		JPanel topSide = new JPanel(new BorderLayout());
@@ -62,9 +62,9 @@ public class JavaWindow extends JFrame{
 		week.setBackground(gray);
 		day.setBackground(gray);
 		month.add(rightTxt);
-		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sÃ¤tter tabbarna till hÃ¶gra sidan
-		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //FÃ¶rsÃ¶ker sÃ¤tta border color
-		UIManager.put("TabbedPane.foreground", Color.lightGray); //Ã„ndrar fÃ¤rgen pÃ¥ texten till ljus grÃ¥
+		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
+		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
+		UIManager.put("TabbedPane.foreground", Color.lightGray); //ändrar färgen på texten till ljus grå
 		UIManager.put("TabbedPane.opaque", true);
 		rightSide.setUI(new BasicTabbedPaneUI() {
 			   @Override
@@ -75,7 +75,7 @@ public class JavaWindow extends JFrame{
 			       shadow = new Color(255, 255, 255, 0);
 			       darkShadow = new Color(255, 255, 255, 0);
 			       focus = Color.gray;
-			       /*Ã„ndrar fÃ¤rger pÃ¥ olika effekter*/
+			       //Ändrar färger på olika effekter*/
 			   }
 			});
 		// ***
@@ -83,7 +83,7 @@ public class JavaWindow extends JFrame{
 		// *** Adds components to the Frame ***
 		rightSide.addTab("Dag", day);
 		rightSide.addTab("Vecka", week);
-		rightSide.addTab("MÃ¥nad", month);
+		rightSide.addTab("Månad", month);
 		
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
@@ -93,7 +93,7 @@ public class JavaWindow extends JFrame{
 		setVisible(true);
 		db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+	}
 	
 	public static void main(String[] args) {
 		try {
@@ -111,8 +111,8 @@ public class JavaWindow extends JFrame{
 	}
 	
 	public void start() {
-		label = new JLabel("AnvÃ¤ndar-ID: ");
-		pwdLabel = new JLabel("LÃ¶senord: ");
+		label = new JLabel("Användar-ID: ");
+		pwdLabel = new JLabel("Lösenord: ");
 		JTextField txt = new JTextField();
 		JPasswordField pass = new JPasswordField();
 		JButton button = new JButton("Submit");
@@ -168,4 +168,3 @@ public class JavaWindow extends JFrame{
 	}
 
 	}
-}
