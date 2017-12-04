@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -30,6 +31,9 @@ public class JavaWindow extends JFrame{
 	JLabel pwdLabel;
 	JLabel welcometxt;
 	JLabel rightTxt;
+	boolean wrongLogin=true;
+	JTextField txt = new JTextField();
+	JPasswordField pass = new JPasswordField();
 
 	public void drawMainWindow() {
 		// *** Create colors ***
@@ -91,7 +95,7 @@ public class JavaWindow extends JFrame{
 		
 		setSize(1000, 600);
 		setVisible(true);
-		db();
+		//db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
@@ -113,8 +117,6 @@ public class JavaWindow extends JFrame{
 	public void start() {
 		label = new JLabel("Användar-ID: ");
 		pwdLabel = new JLabel("Lösenord: ");
-		JTextField txt = new JTextField();
-		JPasswordField pass = new JPasswordField();
 		JButton button = new JButton("Submit");
 		
 		
@@ -132,12 +134,32 @@ public class JavaWindow extends JFrame{
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!txt.getText().isEmpty() && pass.getPassword().length > 0) {
-					new JavaWindow().drawMainWindow();
-				}
-				else
-				{
-					
+				try {
+					//omvandlar lösenord till en string
+					char[] pswChar = pass.getPassword();
+					String pswString = String.valueOf(pswChar);
+					String str = "http://localhost/kalendersystem/kalendersystem.php?uNameSend="+txt.getText()+"&pswSend="+pswString;
+					//Kopplar till php filen
+				    db(str);
+				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) {
+						
+						
+						if(wrongLogin==false) {
+							
+						}
+						else
+						{
+							wrongLogin=false;
+							new JavaWindow().drawMainWindow();
+						}
+					}
+					else
+					{
+						
+					}
+				} catch (Exception er) {
+					// TODO Auto-generated catch block
+					er.printStackTrace();
 				}
 			}
 		});
@@ -147,9 +169,9 @@ public class JavaWindow extends JFrame{
 	}
 	
 
-	public void db() {
+	public void db(String link) {
 		try {
-			URL url = new URL("http://localhost/kalendersystem/kalendersystem.php");
+			URL url = new URL(link);
 			URLConnection phpConnection = url.openConnection();
 			InputStream getData = phpConnection.getInputStream();
 			String data = "";
