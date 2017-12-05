@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -27,8 +28,11 @@ public class JavaWindow extends JFrame
 	JLabel pwdLabel;
 	JLabel welcometxt;
 	JLabel rightTxt;
+	JLabel calendarNameLabel;
 	JTextField txt = new JTextField();
+	JTextField calendarName = new JTextField();
 	JPasswordField pass = new JPasswordField();
+	JButton createCalendar = new JButton("Skapa ny kalender");
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
@@ -51,10 +55,13 @@ public class JavaWindow extends JFrame
 		rightSide.setPreferredSize(new Dimension(750, 600));
 		rightSide.setBackground(darkGray);
 		rightSide.setVisible(true);		
-		JPanel topSide = new JPanel(new BorderLayout());
+		JPanel topSide = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		topSide.setPreferredSize(new Dimension(1000, 100));
 		topSide.setBackground(darkGray);
-		topSide.setVisible(true);		
+		topSide.setVisible(true);
+		
+		createCalendar.setPreferredSize(new Dimension(140,25));
+		
 		//JTabbedPane
 		month.setBackground(gray);
 		week.setBackground(gray);
@@ -81,18 +88,33 @@ public class JavaWindow extends JFrame
 		});
 		// ***
 		// *** Adds components to the Frame ***
+		topSide.add(createCalendar);
 		rightSide.addTab("Dag", day);
 		rightSide.addTab("Vecka", week);
 		rightSide.addTab("Månad", month);
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
 		add(rightSide, BorderLayout.CENTER);
-		setSize(1000, 600);
+		setSize(1000, 600); 
 		setVisible(true);
+		createCalendar.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent create) 
+			{
+				try 
+				{
+					new JavaWindow().createCalendar();
+				} 
+				catch (Exception createEr) 
+				{
+					// TODO Auto-generated catch block
+					createEr.printStackTrace();
+				}
+			}
+		});
 		//db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-	}
-	
+	}	
 	public static void main(String[] args) 
 	{
 		try {
@@ -211,4 +233,45 @@ public class JavaWindow extends JFrame
 		return "";
 	}
 
+	public void createCalendar()
+	{
+		calendarNameLabel = new JLabel("Kalender namn: ");
+		JButton submitCalendarName = new JButton("Skapa kalender");
+		calendarName.setPreferredSize(new Dimension(200,30));
+		submitCalendarName.setPreferredSize(new Dimension(200,50));
+		add(calendarNameLabel);
+		add(calendarName);
+		add(submitCalendarName);
+		setLayout(new FlowLayout());
+		setSize(800, 400);
+		setVisible(true);
+		submitCalendarName.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
+					if(!calendarName.getText().isEmpty())
+					{
+						System.out.println("Name: "+calendarName.getText());
+						String str = "http://localhost/kalendersystem/calendarCreate.php?calendarNameSend="+calendarName.getText();
+						str = str.replaceAll(" ", "%20");
+						System.out.println(str);
+						String returnValue = db(str);
+						System.out.println(returnValue);
+						dispose();
+					}
+					else
+					{
+						System.out.println("Ange namn på kalendern.");
+					}
+				} 
+				catch (Exception er) 
+				{
+					// TODO Auto-generated catch block
+					er.printStackTrace();
+				}
+			}
+		});
+	}
 }
