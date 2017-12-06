@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -38,24 +39,30 @@ public class JavaWindow extends JFrame{
 		// ***
 		
 		// *** Creates the JPanels and modifies them ***
-		welcometxt = new JLabel("VÃ¤lkommen hit!");
-		rightTxt = new JLabel("HÃ¶ger textelement");
+		welcometxt = new JLabel("Välkommen hit!");
+		rightTxt = new JLabel("Höger textelement");
 		JPanel leftSide = new JPanel(new BorderLayout());
 		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
 		JPanel topSide = new JPanel(new BorderLayout());
 		JPanel month = new JPanel();
 		JPanel week = new JPanel();
 		JPanel day = new JPanel();
-		leftSide.add(welcometxt);
+		
+		//topSide
 		topSide.setPreferredSize(new Dimension(1000, 100));
-		leftSide.setPreferredSize(new Dimension(250, 600));
-		rightSide.setPreferredSize(new Dimension(750, 600));
 		topSide.setBackground(darkGray);
-		leftSide.setBackground(darkGray);
-		rightSide.setBackground(darkGray);
 		topSide.setVisible(true);
-		leftSide.setVisible(true);
+		
+		//rightSide
+		rightSide.setPreferredSize(new Dimension(750, 600));
+		rightSide.setBackground(darkGray);
 		rightSide.setVisible(true);
+		
+		//leftSide
+		leftSide.add(welcometxt);
+		leftSide.setPreferredSize(new Dimension(250, 600));
+		leftSide.setBackground(darkGray);
+		leftSide.setVisible(true);
 		
 		//JTabbedPane
 		month.setBackground(gray);
@@ -83,7 +90,7 @@ public class JavaWindow extends JFrame{
 		// *** Adds components to the Frame ***
 		rightSide.addTab("Dag", day);
 		rightSide.addTab("Vecka", week);
-		rightSide.addTab("MÃ¥nad", month);
+		rightSide.addTab("Månad", month);
 		
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
@@ -93,26 +100,14 @@ public class JavaWindow extends JFrame{
 		setVisible(true);
 		db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
 
 	
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		new JavaWindow().start();
-	}
 	
+	//skapar login-rutan
 	public void start() {
-		label = new JLabel("AnvÃ¤ndar-ID: ");
-		pwdLabel = new JLabel("LÃ¶senord: ");
+		label = new JLabel("Användar-ID: ");
+		pwdLabel = new JLabel("Lösenord: ");
 		JTextField txt = new JTextField();
 		JPasswordField pass = new JPasswordField();
 		JButton button = new JButton("Submit");
@@ -149,7 +144,7 @@ public class JavaWindow extends JFrame{
 
 	public void db() {
 		try {
-			URL url = new URL("http://localhost/kalendersystem/kalendersystem.php");
+			URL url = new URL("http://localhost/kalendersystem/transfer.php");
 			URLConnection phpConnection = url.openConnection();
 			InputStream getData = phpConnection.getInputStream();
 			String data = "";
@@ -167,5 +162,20 @@ public class JavaWindow extends JFrame{
 		}
 	}
 
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(30, 200, 0, 0));
+		new JavaWindow().start();
 	}
+	
 }
