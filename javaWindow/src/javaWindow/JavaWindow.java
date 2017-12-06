@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +22,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 @SuppressWarnings("serial")
+
+
 public class JavaWindow extends JFrame
 {
 	JLabel label;
@@ -34,7 +35,7 @@ public class JavaWindow extends JFrame
 	JTextField calendarName = new JTextField();
 	JPasswordField pass = new JPasswordField();
 	JButton createCalendar = new JButton("Skapa ny kalender");
-		//Ritar ut f�nstret efter att lyckats logga in
+		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
 		// *** Create colors ***
@@ -46,7 +47,6 @@ public class JavaWindow extends JFrame
 		welcometxt = new JLabel("Välkommen hit!");
 		rightTxt = new JLabel("Höger textelement");
 		JPanel leftSide = new JPanel(new BorderLayout());
-		rightTxt = new JLabel("H�ger textelement");
 		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
 		JPanel month = new JPanel();
 		JPanel week = new JPanel();
@@ -105,6 +105,7 @@ public class JavaWindow extends JFrame
 		add(rightSide, BorderLayout.CENTER);
 		setSize(1000, 600); 
 		setVisible(true);
+		
 		createCalendar.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent create) 
@@ -133,17 +134,17 @@ public class JavaWindow extends JFrame
 		JPasswordField pass = new JPasswordField();
 
 		JButton button = new JButton("Submit");
-		//Storleks�ndringar f�r olika komponenter
+		//Storleksdeklarering
 		txt.setPreferredSize(new Dimension(200, 30));
 		pass.setPreferredSize(new Dimension(200, 30));
 		button.setPreferredSize(new Dimension(200,50));
-		//L�gger till komponenter till f�nstret
+		//Lägger till komponenter till fönstret
 		add(label);
 		add(txt);
 		add(pwdLabel);
 		add(pass);
 		add(button);
-		//S�tter FlowLayout p� f�nstret
+		//Sätter flowLayout på frame
 		setLayout(new FlowLayout());
 		//Ger funktioner till knappen
 		button.addActionListener(new ActionListener() 
@@ -152,34 +153,34 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					//omvandlar l�senord till en string
+					//omvandlar lösenord till en string
 					char[] pswChar = pass.getPassword();
 					String pswString = String.valueOf(pswChar);
 					//Kopplar till php filen
 					String str = "http://localhost/kalendersystem/kalendersystem.php?uNameSend="+txt.getText()+"&pswSend="+pswString;
 					String returnValue = db(str);
-					//kollar om f�lterna �r tomma eller ej
+					//kollar om fälterna är tomma eller ej
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
-				    	//kollar om v�rdet php filen skickar tillbaka �r 1 eller n�got annat
+				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat
 						if(returnValue.equals("1")) 
 						{
-							//Skapar ny str�ng som h�ller koll p� anv�ndarnamnet. 
+							//Skapar ny sträng som håller koll pä användarnamnet. 
 							String Username = txt.getText();		
-							//Kallar p� metoden som ritar ut kalender f�nstret 
+							//Kallar på metoden som ritar ut kalender fönstret 
 							new JavaWindow().drawMainWindow();
 							System.out.println(Username);
 						}	
-						//Om v�rdet man f�r tillbaka fr�n php filen �r n�got annat �n 1
+						//Om värdet man får tillbaka från php filen är något annat än 1
 						else
 						{
-							System.out.println("Fel anv�ndarnamn eller l�senord.");
+							System.out.println("Fel användarnamn eller lösenord.");
 						}
 					}   
-				    //om en av f�lten eller b�da �r tomma
+				    //om en av fälten eller båda är tomma
 					else
 					{
-						System.out.println("N�gon eller b�da f�lten �r tomma.");
+						System.out.println("Något av fälten är tomma");
 					}
 				} 
 				catch (Exception er) 
@@ -189,14 +190,14 @@ public class JavaWindow extends JFrame
 				}
 			}
 		});
-		//s�tter storleken, g�r den synlig och ger krysset funktionen att st�nga av applikationen
+		
 		setSize(800, 400);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 
-	//Detta �r metoden f�r koppling till php filen, denna ser �ven till s� att vi f�r returned data. 
+	//Detta är metoden får koppling till php filen, denna ser även till så att vi får returned data. 
 	public String db(String link) 
 	{
 		try 
@@ -263,7 +264,7 @@ public class JavaWindow extends JFrame
 			}
 		});
 	}
-}
+
 
 	public static void main(String[] args) {
 		try {
