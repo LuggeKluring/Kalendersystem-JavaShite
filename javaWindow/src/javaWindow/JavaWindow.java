@@ -5,6 +5,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class JavaWindow extends JFrame
 	JTextField calendarName = new JTextField();
 	JPasswordField pass = new JPasswordField();
 	JButton createCalendar = new JButton("Skapa ny kalender");
-		//Ritar ut fönstret efter att lyckats logga in
+		//Ritar ut fï¿½nstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
 		// *** Create colors ***
@@ -41,57 +42,64 @@ public class JavaWindow extends JFrame
 		Color gray = new Color(45,45,45);
 		// ***
 		// *** Creates the JPanels and modifies them ***
-		welcometxt = new JLabel("Välkommen hit!");
+
+		welcometxt = new JLabel("VÃ¤lkommen hit!");
+		rightTxt = new JLabel("HÃ¶ger textelement");
 		JPanel leftSide = new JPanel(new BorderLayout());
-		leftSide.add(welcometxt);
-		leftSide.setPreferredSize(new Dimension(250, 600));
-		leftSide.setBackground(darkGray);
-		leftSide.setVisible(true);			
-		rightTxt = new JLabel("Höger textelement");
+		rightTxt = new JLabel("Hï¿½ger textelement");
 		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
 		JPanel month = new JPanel();
 		JPanel week = new JPanel();
 		JPanel day = new JPanel();
-		rightSide.setPreferredSize(new Dimension(750, 600));
-		rightSide.setBackground(darkGray);
-		rightSide.setVisible(true);		
 		JPanel topSide = new JPanel(new FlowLayout(FlowLayout.LEADING));
+    
+		//topSide
 		topSide.setPreferredSize(new Dimension(1000, 100));
 		topSide.setBackground(darkGray);
 		topSide.setVisible(true);
-		
+	
 		createCalendar.setPreferredSize(new Dimension(140,25));
+
+		//rightSide
+		rightSide.setPreferredSize(new Dimension(750, 600));
+		rightSide.setBackground(darkGray);
+		rightSide.setVisible(true);
+		
+		//leftSide
+		leftSide.add(welcometxt);
+		leftSide.setPreferredSize(new Dimension(250, 600));
+		leftSide.setBackground(darkGray);
+		leftSide.setVisible(true);
 		
 		//JTabbedPane
 		month.setBackground(gray);
 		week.setBackground(gray);
 		day.setBackground(gray);
-		month.add(rightTxt);	
-		//UI ändringar för rightSide
-		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
-		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
-		UIManager.put("TabbedPane.foreground", Color.lightGray); //ändrar färgen på texten till ljus grå
+
+		month.add(rightTxt);
+		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sÃ¤tter tabbarna till hÃ¶gra sidan
+		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //FÃ¶rsÃ¶ker sÃ¤tta border color
+		UIManager.put("TabbedPane.foreground", Color.lightGray); //Ã¤ndrar fÃ¤rgen pÃ¥ texten till ljus grÃ¥
 		UIManager.put("TabbedPane.opaque", true);
-		rightSide.setUI(new BasicTabbedPaneUI() 
-		{
-		   @Override
-		   protected void installDefaults() 
-		   {
-		       super.installDefaults();
-		       highlight = new Color(255, 255, 255, 0);
-		       lightHighlight = new Color(255, 255, 255, 0);
-		       shadow = new Color(255, 255, 255, 0);
-		       darkShadow = new Color(255, 255, 255, 0);
-		       focus = Color.gray;
-		       //Ändrar färger på olika effekter*/
-		   }
-		});
+		rightSide.setUI(new BasicTabbedPaneUI() {
+			   @Override
+			   protected void installDefaults() {
+			       super.installDefaults();
+			       highlight = new Color(255, 255, 255, 0);
+			       lightHighlight = new Color(255, 255, 255, 0);
+			       shadow = new Color(255, 255, 255, 0);
+			       darkShadow = new Color(255, 255, 255, 0);
+			       focus = Color.gray;
+			       //Ã„ndrar fÃ¤rger pÃ¥ olika effekter*/
+			   }
+			});
 		// ***
 		// *** Adds components to the Frame ***
 		topSide.add(createCalendar);
 		rightSide.addTab("Dag", day);
 		rightSide.addTab("Vecka", week);
-		rightSide.addTab("Månad", month);
+		rightSide.addTab("MÃ¥nad", month);
+    
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
 		add(rightSide, BorderLayout.CENTER);
@@ -114,49 +122,28 @@ public class JavaWindow extends JFrame
 		});
 		//db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 	}	
-	public static void main(String[] args) 
-	{
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} 
-		catch (ClassNotFoundException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (InstantiationException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (IllegalAccessException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (UnsupportedLookAndFeelException e) 
-		{
-			e.printStackTrace();
-		}
-		new JavaWindow().start();
-	}
 	
-	//Detta är login fönstret som startas allra först, denna skickar även data till php filen vilket sedan checkar om lösen och användarnamn är korrekta. 
-	public void start() 
-	{
-		//Skapar Labels och en knapp
-		label = new JLabel("Användar-ID: ");
-		pwdLabel = new JLabel("Lösenord: ");
+	//skapar login-rutan
+	public void start() {
+		label = new JLabel("AnvÃ¤ndar-ID: ");
+		pwdLabel = new JLabel("LÃ¶senord: ");
+		JTextField txt = new JTextField();
+		JPasswordField pass = new JPasswordField();
+
 		JButton button = new JButton("Submit");
-		//Storleksändringar för olika komponenter
+		//Storleksï¿½ndringar fï¿½r olika komponenter
 		txt.setPreferredSize(new Dimension(200, 30));
 		pass.setPreferredSize(new Dimension(200, 30));
 		button.setPreferredSize(new Dimension(200,50));
-		//Lägger till komponenter till fönstret
+		//Lï¿½gger till komponenter till fï¿½nstret
 		add(label);
 		add(txt);
 		add(pwdLabel);
 		add(pass);
 		add(button);
-		//Sätter FlowLayout på fönstret
+		//Sï¿½tter FlowLayout pï¿½ fï¿½nstret
 		setLayout(new FlowLayout());
 		//Ger funktioner till knappen
 		button.addActionListener(new ActionListener() 
@@ -165,34 +152,34 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					//omvandlar lösenord till en string
+					//omvandlar lï¿½senord till en string
 					char[] pswChar = pass.getPassword();
 					String pswString = String.valueOf(pswChar);
 					//Kopplar till php filen
 					String str = "http://localhost/kalendersystem/kalendersystem.php?uNameSend="+txt.getText()+"&pswSend="+pswString;
 					String returnValue = db(str);
-					//kollar om fälterna är tomma eller ej
+					//kollar om fï¿½lterna ï¿½r tomma eller ej
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
-				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat
+				    	//kollar om vï¿½rdet php filen skickar tillbaka ï¿½r 1 eller nï¿½got annat
 						if(returnValue.equals("1")) 
 						{
-							//Skapar ny sträng som håller koll på användarnamnet. 
+							//Skapar ny strï¿½ng som hï¿½ller koll pï¿½ anvï¿½ndarnamnet. 
 							String Username = txt.getText();		
-							//Kallar på metoden som ritar ut kalender fönstret 
+							//Kallar pï¿½ metoden som ritar ut kalender fï¿½nstret 
 							new JavaWindow().drawMainWindow();
 							System.out.println(Username);
 						}	
-						//Om värdet man får tillbaka från php filen är något annat än 1
+						//Om vï¿½rdet man fï¿½r tillbaka frï¿½n php filen ï¿½r nï¿½got annat ï¿½n 1
 						else
 						{
-							System.out.println("Fel användarnamn eller lösenord.");
+							System.out.println("Fel anvï¿½ndarnamn eller lï¿½senord.");
 						}
 					}   
-				    //om en av fälten eller båda är tomma
+				    //om en av fï¿½lten eller bï¿½da ï¿½r tomma
 					else
 					{
-						System.out.println("Någon eller båda fälten är tomma.");
+						System.out.println("Nï¿½gon eller bï¿½da fï¿½lten ï¿½r tomma.");
 					}
 				} 
 				catch (Exception er) 
@@ -202,18 +189,20 @@ public class JavaWindow extends JFrame
 				}
 			}
 		});
-		//sätter storleken, gör den synlig och ger krysset funktionen att stänga av applikationen
+		//sï¿½tter storleken, gï¿½r den synlig och ger krysset funktionen att stï¿½nga av applikationen
 		setSize(800, 400);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	//Detta är metoden för koppling till php filen, denna ser även till så att vi får returned data. 
+
+	//Detta ï¿½r metoden fï¿½r koppling till php filen, denna ser ï¿½ven till sï¿½ att vi fï¿½r returned data. 
 	public String db(String link) 
 	{
 		try 
 		{
 			URL url = new URL(link);
+
 			URLConnection phpConnection = url.openConnection();
 			InputStream getData = phpConnection.getInputStream();
 			String data = "";
@@ -263,7 +252,7 @@ public class JavaWindow extends JFrame
 					}
 					else
 					{
-						System.out.println("Ange namn på kalendern.");
+						System.out.println("Ange namn pï¿½ kalendern.");
 					}
 				} 
 				catch (Exception er) 
@@ -275,3 +264,23 @@ public class JavaWindow extends JFrame
 		});
 	}
 }
+
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		UIManager.getLookAndFeelDefaults().put("TabbedPane:TabbedPaneTab.contentMargins", new Insets(30, 200, 0, 0));
+		new JavaWindow().start();
+	}
+
+	
+}
+
