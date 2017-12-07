@@ -18,8 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -35,10 +38,25 @@ public class JavaWindow extends JFrame
 	JLabel welcometxt;
 	JLabel rightTxt;
 	JLabel calendarNameLabel;
+	JLabel eventTitleLabel;
+	JLabel eventDateTimeLabel;
+	JLabel eventInfoLabel;
+	JLabel noticeTitleLabel;
+	JLabel noticeDateTimeLabel;
+	JLabel noticeInfoLabel;
 	JTextField txt = new JTextField();
 	JTextField calendarName = new JTextField();
+	JTextField eventTitle = new JTextField();
+	JTextField eventDateTime = new JTextField();
+	JTextField noticeTitle = new JTextField();
+	JTextField noticeDateTime = new JTextField();
 	JPasswordField pass = new JPasswordField();
 	JButton createCalendar = new JButton("+ Skapa ny kalender");
+	JButton createEvent = new JButton("+ Skapa nytt event");
+	JButton createNotice = new JButton("+ Skapa ny notis");
+	JTextArea eventInfo = new JTextArea(30, 50);
+	JTextArea noticeInfo = new JTextArea(30, 50);
+	public int textAreaLimit = 200;
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
@@ -77,6 +95,8 @@ public class JavaWindow extends JFrame
 		welcometxt.setFont(new Font("Roboto", Font.BOLD, 30));
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
+		leftSide.add(createEvent);
+		leftSide.add(createNotice);
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
 		leftSide.setVisible(true);
@@ -86,6 +106,18 @@ public class JavaWindow extends JFrame
 		createCalendar.setForeground(new Color(255,255,255));
 		createCalendar.setFont(new Font("Roboto", Font.PLAIN, 13));
 		createCalendar.setBackground(null);
+		createEvent.setPreferredSize(new Dimension(140,25));
+		createEvent.setBorderPainted(false);
+		createEvent.setContentAreaFilled(false);
+		createEvent.setForeground(new Color(255,255,255));
+		createEvent.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createEvent.setBackground(null);
+		createNotice.setPreferredSize(new Dimension(140,25));
+		createNotice.setBorderPainted(false);
+		createNotice.setContentAreaFilled(false);
+		createNotice.setForeground(new Color(255,255,255));
+		createNotice.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createNotice.setBackground(null);
 		leftSide.setForeground(new Color(255,255,255));
 		
 		welcometxt.setForeground(new Color(255,255,255));
@@ -146,6 +178,39 @@ public class JavaWindow extends JFrame
 				}
 			}
 		});
+		
+		createEvent.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent create) 
+			{
+				try 
+				{
+					new JavaWindow().createEvent();
+				} 
+				catch (Exception createEr) 
+				{
+					// TODO Auto-generated catch block
+					createEr.printStackTrace();
+				}
+			}
+		});
+		
+		createNotice.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent create) 
+			{
+				try 
+				{
+					new JavaWindow().createNotice();
+				} 
+				catch (Exception createEr) 
+				{
+					// TODO Auto-generated catch block
+					createEr.printStackTrace();
+				}
+			}
+		});
+		
 		//db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -285,6 +350,118 @@ public class JavaWindow extends JFrame
 					else
 					{
 						System.out.println("Ange namn p� kalendern.");
+					}
+				} 
+				catch (Exception er) 
+				{
+					// TODO Auto-generated catch block
+					er.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public void createEvent()
+	{
+		eventTitleLabel = new JLabel("Titel på event: ");
+		eventDateTimeLabel = new JLabel("Datum och tid: ");
+		eventInfoLabel = new JLabel("Om event: ");
+		JButton submitEvent = new JButton("Skapa nytt event");
+		eventTitle.setPreferredSize(new Dimension(200,30));
+		eventDateTime.setPreferredSize(new Dimension(200,30));
+		submitEvent.setPreferredSize(new Dimension(200,50));
+		eventInfo.setSize(200, 200);
+		eventInfo.setLineWrap(true);
+		eventInfo.setWrapStyleWord(true);
+		eventInfo.setRows(10);
+		
+		add(eventTitleLabel);
+		add(eventTitle);
+		add(eventDateTimeLabel);
+		add(eventDateTime);
+		add(eventInfoLabel);
+		add(eventInfo);
+		add(submitEvent);
+		setLayout(new FlowLayout());
+		setSize(800, 400);
+		setVisible(true);
+		submitEvent.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
+					if(!eventTitle.getText().isEmpty()&&!eventDateTime.getText().isEmpty())
+					{
+						System.out.println("Titel: "+eventTitle.getText());
+						System.out.println("Event datum: "+eventDateTime.getText());
+						System.out.println("Event beskrivning: "+eventInfo.getText());
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+eventDateTime.getText()+"&eventInfoSend="+eventInfo.getText();
+						str = str.replaceAll(" ", "%20");
+						System.out.println(str);
+						String returnValue = db(str);
+						System.out.println(returnValue);
+						dispose();
+					}
+					else
+					{
+						System.out.println("Ange titel och datum för eventet.");
+					}
+				} 
+				catch (Exception er) 
+				{
+					// TODO Auto-generated catch block
+					er.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public void createNotice()
+	{
+		noticeTitleLabel = new JLabel("Titel på event: ");
+		noticeDateTimeLabel = new JLabel("Datum och tid: ");
+		noticeInfoLabel = new JLabel("Beskrivning: ");
+		JButton submitNotice = new JButton("Skapa ny notis");
+		noticeTitle.setPreferredSize(new Dimension(200,30));
+		noticeDateTime.setPreferredSize(new Dimension(200,30));
+		submitNotice.setPreferredSize(new Dimension(200,50));
+		noticeInfo.setSize(200, 200);
+		noticeInfo.setLineWrap(true);
+		noticeInfo.setWrapStyleWord(true);
+		noticeInfo.setRows(10);
+		
+		add(noticeTitleLabel);
+		add(noticeTitle);
+		add(noticeDateTimeLabel);
+		add(noticeDateTime);
+		add(noticeInfoLabel);
+		add(noticeInfo);
+		add(submitNotice);
+		setLayout(new FlowLayout());
+		setSize(800, 400);
+		setVisible(true);
+		submitNotice.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
+					if(!noticeTitle.getText().isEmpty()&&!noticeDateTime.getText().isEmpty())
+					{
+						System.out.println("Name: "+noticeTitle.getText());
+						System.out.println("Event datum: "+noticeDateTime.getText());
+						System.out.println("Event beskrivning: "+noticeInfo.getText());
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+noticeDateTime.getText()+"&noticeInfoSend="+noticeInfo.getText();
+						str = str.replaceAll(" ", "%20");
+						System.out.println(str);
+						String returnValue = db(str);
+						System.out.println(returnValue);
+						dispose();
+					}
+					else
+					{
+						System.out.println("Ange titel och datum för notis.");
 					}
 				} 
 				catch (Exception er) 
