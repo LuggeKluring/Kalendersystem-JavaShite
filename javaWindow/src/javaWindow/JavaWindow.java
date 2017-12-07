@@ -5,7 +5,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-//import java.awt.Insets;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -16,6 +16,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
@@ -29,6 +30,13 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class JavaWindow extends JFrame
 {
+	public JavaWindow() {
+		super("Kalender");
+		this.pack();
+		this.setLocationRelativeTo(null);
+	}
+	
+	
 	public static String Username;
 	JLabel label;
 	JLabel pwdLabel;
@@ -48,30 +56,31 @@ public class JavaWindow extends JFrame
 		// ***
 		// *** Creates the JPanels and modifies them ***
 
+		
 		welcometxt = new JLabel("Dina kalendrar");
 		rightTxt = new JLabel("Höger textelement");
-		JPanel leftSide = new JPanel();
-		
-		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
-		JPanel month = new JPanel();
-		JPanel week = new JPanel();
-		JPanel day = new JPanel();
 		JPanel topSide = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		JPanel leftSide = new JPanel();
+		JTabbedPane rightSide = new JTabbedPane(JTabbedPane.TOP);
+			JPanel month = new JPanel();
+			JPanel week = new JPanel();
+			JPanel day = new JPanel();
+		
     
-		//topSide
+		//topSide ---------
 		topSide.setPreferredSize(new Dimension(1000, 100));
 		topSide.setBackground(darkGray);
 		topSide.setVisible(true);
 		topSide.setForeground(new Color(255,255,255));
 		
 
-		//rightSide
+		//rightSide -------
 		rightSide.setPreferredSize(new Dimension(750, 500));
 		rightSide.setBackground(darkGray);
 		rightSide.setVisible(true);
 		rightSide.setForeground(new Color(255,255,255));
 		
-		//leftSide
+		//leftSide --------
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.PAGE_AXIS));
 		leftSide.add(welcometxt);
 		welcometxt.setFont(new Font("Roboto", Font.BOLD, 30));
@@ -80,30 +89,42 @@ public class JavaWindow extends JFrame
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
 		leftSide.setVisible(true);
+		leftSide.setForeground(new Color(255,255,255));
 		createCalendar.setPreferredSize(new Dimension(140,25));
 		createCalendar.setBorderPainted(false);
 		createCalendar.setContentAreaFilled(false);
 		createCalendar.setForeground(new Color(255,255,255));
 		createCalendar.setFont(new Font("Roboto", Font.PLAIN, 13));
 		createCalendar.setBackground(null);
-		leftSide.setForeground(new Color(255,255,255));
+		
 		
 		welcometxt.setForeground(new Color(255,255,255));
 		rightTxt.setForeground(new Color(255,255,255));
 		
 		
 		
-		//JTabbedPane
+		//JTabbedPane ------
 		month.setBackground(gray);
 		week.setBackground(gray);
 		day.setBackground(gray);
-
+		//dayGrid - Skapar rutnätet med dagar 
+		JPanel dayGrid = new JPanel(new GridLayout(4,7,15,15));
+			JButton dayButton;
+			for(int i=0 ; i<35 ; i++) {
+				int num = i+1;
+				dayGrid.add(dayButton = new JButton(""+num));
+				dayButton.setPreferredSize(new Dimension(60, 60));
+				dayButton.setContentAreaFilled(false);
+				dayButton.setBackground(null);
+				dayButton.setBorderPainted(true);
+			}
+		month.add(dayGrid);
 		
-		
-		month.add(rightTxt);
 		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
 		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
 		UIManager.put("TabbedPane.foreground", Color.lightGray); //ändrar färgen på texten till ljus grå
+		UIManager.put("TabbedPane:TabbedPaneTab.contentMargins", new EmptyBorder(20,20,20,20));
+		UIManager.put("TabbedPane.insets", new EmptyBorder(20,20,20,20));
 		UIManager.put("TabbedPane.opaque", true);
 		rightSide.setUI(new BasicTabbedPaneUI() {
 			   @Override
@@ -196,10 +217,12 @@ public class JavaWindow extends JFrame
 							//Kallar på metoden som ritar ut kalender fönstret 
 							new JavaWindow().drawMainWindow();
 							System.out.println(Username);
+							dispose();
 						}	
 						//Om värdet man får tillbaka från php filen är något annat än 1
 						else
 						{
+							JOptionPane.showMessageDialog(null, "Fel användarnamn och/eller lösenord!");
 							System.out.println("Fel användarnamn eller lösenord.");
 						}
 					}   
@@ -281,6 +304,7 @@ public class JavaWindow extends JFrame
 						String returnValue = db(str);
 						System.out.println(returnValue);
 						dispose();
+						JOptionPane.showMessageDialog(null, "Kalendern '"+calendarName.getText()+"' är skapad!");
 					}
 					else
 					{
