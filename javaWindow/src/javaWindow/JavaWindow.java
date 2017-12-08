@@ -19,11 +19,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
+//import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+//import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -65,6 +65,8 @@ public class JavaWindow extends JFrame
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
 	public int textAreaLimit = 200;
+	public int anvandarId;
+	
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
@@ -277,7 +279,7 @@ public class JavaWindow extends JFrame
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
 				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat
-						if(returnValue.equals("1")) 
+						if(returnValue.equals("1"))
 						{
 							//Skapar ny sträng som håller koll pä användarnamnet. 
 							Username = txt.getText();		
@@ -423,6 +425,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Event datum: "+eventDateTime.getText());
 						System.out.println("Event beskrivning: "+eventInfo.getText());
 						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+eventDateTime.getText()+"&eventInfoSend="+eventInfo.getText();
+						str = str.replaceAll("\n", "%0A");
+						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
@@ -479,6 +483,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Event datum: "+noticeDateTime.getText());
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
 						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+noticeDateTime.getText()+"&noticeInfoSend="+noticeInfo.getText();
+						str = str.replaceAll("\n", "%0A");
+						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
