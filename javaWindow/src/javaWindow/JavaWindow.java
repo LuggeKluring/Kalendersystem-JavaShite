@@ -65,6 +65,8 @@ public class JavaWindow extends JFrame
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
 	public int textAreaLimit = 200;
+	public int anvandarId;
+	
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
@@ -277,7 +279,7 @@ public class JavaWindow extends JFrame
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
 				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat
-						if(returnValue.equals("1")) 
+						if(returnValue.equals("1"))
 						{
 							//Skapar ny sträng som håller koll pä användarnamnet. 
 							Username = txt.getText();		
