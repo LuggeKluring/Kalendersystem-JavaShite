@@ -28,6 +28,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+
+import org.json.JSONObject;
 @SuppressWarnings("serial")
 
 
@@ -65,6 +67,8 @@ public class JavaWindow extends JFrame
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
 	public int textAreaLimit = 200;
+	public int userId;
+	JSONObject loggedUser = new JSONObject();
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow() 
 	{
@@ -266,24 +270,25 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
+					loggedUser.put("username",txt.getText());
 					//omvandlar lösenord till en string
 					char[] pswChar = pass.getPassword();
 					String pswString = String.valueOf(pswChar);
+					loggedUser.put("password", pswString);
 					//Kopplar till php filen
-					String str = "http://localhost/kalendersystem/kalendersystem.php?uNameSend="+txt.getText()+"&pswSend="+pswString;
+					String str = "http://localhost/kalendersystem/kalendersystem.php?userCredSend="+loggedUser;
 					str = str.replaceAll(" ", "%20");
 					String returnValue = db(str);
+					System.out.println(loggedUser);
 					//kollar om fälterna är tomma eller ej
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
-				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat
-						if(returnValue.equals("1")) 
+				    	//kollar om värdet php filen skickar tillbaka är 1 eller något annat	    	
+						if(!returnValue.equals("0")) 
 						{
-							//Skapar ny sträng som håller koll pä användarnamnet. 
-							Username = txt.getText();		
 							//Kallar på metoden som ritar ut kalender fönstret 
 							new JavaWindow().drawMainWindow();
-							System.out.println(Username);
+							userId= Integer.parseInt(returnValue);
 							dispose();
 						}	
 						//Om värdet man får tillbaka från php filen är något annat än 1
@@ -291,6 +296,7 @@ public class JavaWindow extends JFrame
 						{
 							JOptionPane.showMessageDialog(null, "Fel användarnamn och/eller lösenord!");
 							System.out.println("Fel användarnamn eller lösenord.");
+							System.out.println(returnValue);
 						}
 					}   
 				    //om en av fälten eller båda är tomma
