@@ -31,6 +31,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+
+
 import org.json.JSONObject;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
@@ -77,7 +79,7 @@ public class JavaWindow extends JFrame
 	public int userId;
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
-	CalendarDateModel
+	DateModel model = new DateModel();
 	JDatePanelImpl datePanel = new JDatePanelImpl(model);
 	JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 	
