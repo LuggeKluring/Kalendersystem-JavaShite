@@ -69,9 +69,16 @@ public class JavaWindow extends JFrame
 	public int textAreaLimit = 200;
 	public int userId;
 	JSONObject loggedUser = new JSONObject();
+	JSONObject calendars = new JSONObject();
 		//Ritar ut fönstret efter att lyckats logga in
-	public void drawMainWindow() 
+	public void drawMainWindow(JSONObject loggedUser) 
 	{
+		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
+		str = str.replaceAll(" ", "%20");
+		String returnValue = db(str);
+		
+		calendars.put("kalendrar", returnValue);
+		System.out.println(calendars);
 		// *** Create colors ***
 		Color darkGray = new Color(30,30,30);
 		Color gray = new Color(45,45,45);
@@ -287,7 +294,7 @@ public class JavaWindow extends JFrame
 						if(!returnValue.equals("0")) 
 						{
 							//Kallar på metoden som ritar ut kalender fönstret 
-							new JavaWindow().drawMainWindow();
+							new JavaWindow().drawMainWindow(loggedUser);
 							userId= Integer.parseInt(returnValue);
 							dispose();
 						}	
