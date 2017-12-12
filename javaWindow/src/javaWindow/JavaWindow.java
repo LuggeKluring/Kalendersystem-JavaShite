@@ -19,11 +19,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
+//import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+//import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -70,6 +70,7 @@ public class JavaWindow extends JFrame
 	public int userId;
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
+
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow(JSONObject loggedUser) 
 	{
@@ -436,6 +437,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Event datum: "+eventDateTime.getText());
 						System.out.println("Event beskrivning: "+eventInfo.getText());
 						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+eventDateTime.getText()+"&eventInfoSend="+eventInfo.getText();
+						str = str.replaceAll("\n", "%0A");
+						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
@@ -492,6 +495,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Event datum: "+noticeDateTime.getText());
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
 						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+noticeDateTime.getText()+"&noticeInfoSend="+noticeInfo.getText();
+						str = str.replaceAll("\n", "%0A");
+						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
