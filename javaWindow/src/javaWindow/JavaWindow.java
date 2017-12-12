@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
+import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,8 +31,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
-
+//import org.jdatepicker.*;
+//import org.jdatepicker.graphics.*;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 import org.json.JSONObject;
+
 @SuppressWarnings("serial")
 
 
@@ -70,6 +78,7 @@ public class JavaWindow extends JFrame
 	public int userId;
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
+	public String date;
 
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow(JSONObject loggedUser) 
@@ -404,6 +413,7 @@ public class JavaWindow extends JFrame
 	
 	public void createEvent()
 	{
+		
 		eventTitleLabel = new JLabel("Titel på event: ");
 		eventDateTimeLabel = new JLabel("Datum och tid: ");
 		eventInfoLabel = new JLabel("Om event: ");
@@ -416,10 +426,13 @@ public class JavaWindow extends JFrame
 		eventInfo.setWrapStyleWord(true);
 		eventInfo.setRows(10);
 		
+		
+		
 		add(eventTitleLabel);
 		add(eventTitle);
 		add(eventDateTimeLabel);
-		add(eventDateTime);
+		
+		//add(eventDateTime);
 		add(eventInfoLabel);
 		add(eventInfo);
 		add(submitEvent);
@@ -432,12 +445,13 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					if(!eventTitle.getText().isEmpty()&&!eventDateTime.getText().isEmpty())
+					if(!eventTitle.getText().isEmpty())
 					{
+						
 						System.out.println("Titel: "+eventTitle.getText());
-						System.out.println("Event datum: "+eventDateTime.getText());
+						System.out.println("Event datum: "+date);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+eventDateTime.getText()+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+date+"&eventInfoSend="+eventInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -473,6 +487,13 @@ public class JavaWindow extends JFrame
 		noticeInfo.setLineWrap(true);
 		noticeInfo.setWrapStyleWord(true);
 		noticeInfo.setRows(10);
+		
+		
+		UtilDateModel model = new UtilDateModel();
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, null);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, null);
+
+		add(datePicker);
 		
 		add(noticeTitleLabel);
 		add(noticeTitle);
