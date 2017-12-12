@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
-import java.util.Properties;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,12 +31,11 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
-//import org.jdatepicker.*;
-//import org.jdatepicker.graphics.*;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 import org.json.JSONObject;
+
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 @SuppressWarnings("serial")
 
@@ -78,6 +77,10 @@ public class JavaWindow extends JFrame
 	public int userId;
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
+	CalendarDateModel
+	JDatePanelImpl datePanel = new JDatePanelImpl(model);
+	JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+	
 	public String date;
 
 		//Ritar ut fönstret efter att lyckats logga in
@@ -425,12 +428,10 @@ public class JavaWindow extends JFrame
 		eventInfo.setLineWrap(true);
 		eventInfo.setWrapStyleWord(true);
 		eventInfo.setRows(10);
-		
-		
-		
 		add(eventTitleLabel);
 		add(eventTitle);
 		add(eventDateTimeLabel);
+		add(datePicker);
 		
 		//add(eventDateTime);
 		add(eventInfoLabel);
@@ -447,11 +448,12 @@ public class JavaWindow extends JFrame
 				{
 					if(!eventTitle.getText().isEmpty())
 					{
-						
+						Calendar selectedValue = (Calendar) datePicker.getModel().getValue();
+						Date selectedDate = selectedValue.getTime();
 						System.out.println("Titel: "+eventTitle.getText());
-						System.out.println("Event datum: "+date);
+						System.out.println("Event datum: "+selectedDate);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+date+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+selectedDate+"&eventInfoSend="+eventInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -487,14 +489,8 @@ public class JavaWindow extends JFrame
 		noticeInfo.setLineWrap(true);
 		noticeInfo.setWrapStyleWord(true);
 		noticeInfo.setRows(10);
-		
-		
-		UtilDateModel model = new UtilDateModel();
-		JDatePanelImpl datePanel = new JDatePanelImpl(model, null);
-		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, null);
 
 		add(datePicker);
-		
 		add(noticeTitleLabel);
 		add(noticeTitle);
 		add(noticeDateTimeLabel);
@@ -513,10 +509,14 @@ public class JavaWindow extends JFrame
 				{
 					if(!noticeTitle.getText().isEmpty()&&!noticeDateTime.getText().isEmpty())
 					{
+						// Get datepicker output
+						Calendar selectedValue = (Calendar) datePicker.getModel().getValue();
+						Date selectedDate = selectedValue.getTime();
+						
 						System.out.println("Name: "+noticeTitle.getText());
-						System.out.println("Event datum: "+noticeDateTime.getText());
+						System.out.println("Event datum: "+selectedDate);
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
-						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+noticeDateTime.getText()+"&noticeInfoSend="+noticeInfo.getText();
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+selectedDate+"&noticeInfoSend="+noticeInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
