@@ -77,8 +77,9 @@ public class JavaWindow extends JFrame
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
 		str = str.replaceAll(" ", "%20");
 		String returnValue = db(str);
+		String[] cleanStr = returnValue.split(" ");
 		
-		calendars.put("kalendrar", returnValue);
+		calendars.put("kalendrar", cleanStr);
 		System.out.println(calendars);
 		// *** Create colors ***
 		Color darkGray = new Color(30,30,30);
@@ -102,7 +103,8 @@ public class JavaWindow extends JFrame
 		topSide.setBackground(darkGray);
 		topSide.setVisible(true);
 		topSide.setForeground(new Color(255,255,255));
-		
+		topSide.add(createEvent);
+		topSide.add(createNotice);
 
 		//rightSide -------
 		rightSide.setPreferredSize(new Dimension(750, 500));
@@ -116,8 +118,7 @@ public class JavaWindow extends JFrame
 		welcometxt.setFont(new Font("Roboto", Font.BOLD, 30));
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
-		leftSide.add(createEvent);
-		leftSide.add(createNotice);
+		
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
 		leftSide.setVisible(true);
@@ -164,8 +165,8 @@ public class JavaWindow extends JFrame
 				dayButton.setBackground(null);
 				dayButton.setBorderPainted(true);
 			}
+			
 		month.add(dayGrid);
-		
 		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
 		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
 		UIManager.put("TabbedPane.foreground", Color.lightGray); //ändrar färgen på texten till ljus grå
