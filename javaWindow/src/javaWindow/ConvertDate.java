@@ -6,13 +6,13 @@ import java.util.Date;
 
 public class ConvertDate {
 
-	Date date = JavaWindow.selectedDate;
+	String date = JavaWindow.selectedDate;
 	public static String formattedDate;
 	
-	public static Calendar toCalendar(Date date){
-		System.out.println(date);
+	public static Calendar toCalendar(Date selectedDate){
+		System.out.println(selectedDate);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
+		cal.setTime(selectedDate);
 		calendarFormat(cal);
 		return cal;
 	}
