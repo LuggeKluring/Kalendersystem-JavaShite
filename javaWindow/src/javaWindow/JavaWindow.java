@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -64,6 +66,7 @@ public class JavaWindow extends JFrame
 	JButton createCalendar = new JButton("+ Skapa ny kalender");
 	JButton createEvent = new JButton("+ Skapa nytt event");
 	JButton createNotice = new JButton("+ Skapa ny notis");
+	JButton calendarListItem = new JButton("Test ");
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
 	public int textAreaLimit = 200;
@@ -77,9 +80,11 @@ public class JavaWindow extends JFrame
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
 		str = str.replaceAll(" ", "%20");
 		String returnValue = db(str);
+		System.out.println(returnValue);
+		String[] calendarArr = returnValue.split(" ");
+		int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
+		System.out.println(tempArray+" "+calendarArr);
 		
-		calendars.put("kalendrar", returnValue);
-		System.out.println(calendars);
 		// *** Create colors ***
 		Color darkGray = new Color(30,30,30);
 		Color gray = new Color(45,45,45);
@@ -116,6 +121,23 @@ public class JavaWindow extends JFrame
 		welcometxt.setFont(new Font("Roboto", Font.BOLD, 30));
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
+		
+		System.out.println(tempArray.length);
+		
+		for(int i = 1; i <= tempArray.length; i++)
+		{
+			int num=i-1;
+			leftSide.add(calendarListItem = new JButton(""+num));
+			calendarListItem.setText("Test "+i);
+			calendarListItem.setPreferredSize(new Dimension(140,25));
+			calendarListItem.setBorderPainted(false);
+			calendarListItem.setContentAreaFilled(false);
+			calendarListItem.setForeground(new Color(255,255,255));
+			calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
+			calendarListItem.setBackground(null);
+			System.out.println(i);
+		}
+		
 		leftSide.add(createEvent);
 		leftSide.add(createNotice);
 		leftSide.setPreferredSize(new Dimension(250, 500));
