@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,12 +30,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-
 import org.json.JSONObject;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.components.TimePicker;
+import com.github.lgooddatepicker.components.TimePickerSettings;
+
+
+
+
 
 @SuppressWarnings("serial")
 
@@ -75,13 +78,16 @@ public class JavaWindow extends JFrame
 	JButton createNotice = new JButton("+ Skapa ny notis");
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
+	Font roboto = new Font("Roboto", Font.PLAIN, 13);
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
 	/***DatePicker***/
-	UtilDateModel model = new UtilDateModel();
-	JDatePanelImpl datePanel = new JDatePanelImpl(model);
-	JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-	public static Date selectedDate = new Date();
+	DatePickerSettings dateSettings = new DatePickerSettings();
+	TimePickerSettings timeSettings = new TimePickerSettings();
+	DatePicker datePicker = new DatePicker();
+	TimePicker timePicker = new TimePicker();
+	public static String selectedDate;
+	public static String selectedTime;
 	
 	public String date;
 
@@ -141,20 +147,20 @@ public class JavaWindow extends JFrame
 		createCalendar.setBorderPainted(false);
 		createCalendar.setContentAreaFilled(false);
 		createCalendar.setForeground(new Color(255,255,255));
-		createCalendar.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createCalendar.setFont(roboto);
 		createCalendar.setBackground(null);
 
 		createEvent.setPreferredSize(new Dimension(140,25));
 		createEvent.setBorderPainted(false);
 		createEvent.setContentAreaFilled(false);
 		createEvent.setForeground(new Color(255,255,255));
-		createEvent.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createEvent.setFont(roboto);
 		createEvent.setBackground(null);
 		createNotice.setPreferredSize(new Dimension(140,25));
 		createNotice.setBorderPainted(false);
 		createNotice.setContentAreaFilled(false);
 		createNotice.setForeground(new Color(255,255,255));
-		createNotice.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createNotice.setFont(roboto);
 		createNotice.setBackground(null);
 		leftSide.setForeground(new Color(255,255,255));
 
@@ -417,8 +423,12 @@ public class JavaWindow extends JFrame
 	}
 	
 	public void createEvent() //TODO createEvent
-	{
-		
+	{	
+		dateSettings = new DatePickerSettings();
+	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    datePicker = new DatePicker(dateSettings);
+	    timePicker = new TimePicker(timeSettings);
 		eventTitleLabel = new JLabel("Titel på event: ");
 		eventDateTimeLabel = new JLabel("Datum och tid: ");
 		eventInfoLabel = new JLabel("Om event: ");
@@ -434,6 +444,7 @@ public class JavaWindow extends JFrame
 		add(eventTitle);
 		add(eventDateTimeLabel);
 		add(datePicker);
+		add(timePicker);
 		
 		//add(eventDateTime);
 		add(eventInfoLabel);
@@ -451,13 +462,13 @@ public class JavaWindow extends JFrame
 					if(!eventTitle.getText().isEmpty())
 					{
 						//DatePicker output
-						selectedDate = (Date) datePicker.getModel().getValue();
-						ConvertDate.toCalendar(selectedDate);
+						selectedDate = datePicker.getDateStringOrEmptyString();
+						selectedTime = timePicker.getTimeStringOrEmptyString();
 						
 						System.out.println("Titel: "+eventTitle.getText());
-						System.out.println("Event datum: "+ConvertDate.formattedDate);
+						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+ConvertDate.formattedDate+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&eventInfoSend="+eventInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -482,7 +493,11 @@ public class JavaWindow extends JFrame
 	
 	public void createNotice()	//TODO createNotice
 	{
-		
+		dateSettings = new DatePickerSettings();
+	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    datePicker = new DatePicker(dateSettings);
+	    timePicker = new TimePicker(timeSettings);
 		noticeTitleLabel = new JLabel("Notistitel: ");
 		noticeDateTimeLabel = new JLabel("Datum och tid: ");
 		noticeInfoLabel = new JLabel("Beskrivning: ");
@@ -500,6 +515,7 @@ public class JavaWindow extends JFrame
 		add(noticeTitle);
 		add(noticeDateTimeLabel);
 		add(datePicker);
+		add(timePicker);
 		add(noticeInfoLabel);
 		add(noticeInfo);
 		add(submitNotice);
@@ -515,13 +531,14 @@ public class JavaWindow extends JFrame
 					if(!noticeTitle.getText().isEmpty())
 					{
 						// Get datepicker output
-						selectedDate = (Date) datePicker.getModel().getValue();
-						ConvertDate.toCalendar(selectedDate);
+						selectedDate = datePicker.getDateStringOrEmptyString();
+						selectedTime = timePicker.getTimeStringOrEmptyString();
+						//ConvertDate.toCalendar(selectedDate);
 						
 						System.out.println("Name: "+noticeTitle.getText());
-						System.out.println("Event datum: "+ConvertDate.formattedDate);
+						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
-						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+ConvertDate.formattedDate+"&noticeInfoSend="+noticeInfo.getText();
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&noticeInfoSend="+noticeInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
