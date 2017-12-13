@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -50,8 +49,9 @@ public class JavaWindow extends JFrame
 		this.setLocationRelativeTo(null);
 	}
 	
-	
 	public static String Username;
+	public int textAreaLimit = 200;
+	public int userId;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -75,13 +75,13 @@ public class JavaWindow extends JFrame
 	JButton createNotice = new JButton("+ Skapa ny notis");
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
-	public int textAreaLimit = 200;
-	public int userId;
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
-	DateModel model = new DateModel();
+	/***DatePicker***/
+	UtilDateModel model = new UtilDateModel();
 	JDatePanelImpl datePanel = new JDatePanelImpl(model);
 	JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+	public static Date selectedDate = new Date();
 	
 	public String date;
 
@@ -223,7 +223,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -239,7 +239,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -255,7 +255,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -330,7 +330,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
@@ -366,7 +366,7 @@ public class JavaWindow extends JFrame
 		} 
 		catch (Exception e) 
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return "";
@@ -409,14 +409,14 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
 		});
 	}
 	
-	public void createEvent()
+	public void createEvent() //TODO createEvent
 	{
 		
 		eventTitleLabel = new JLabel("Titel på event: ");
@@ -450,12 +450,14 @@ public class JavaWindow extends JFrame
 				{
 					if(!eventTitle.getText().isEmpty())
 					{
-						Calendar selectedValue = (Calendar) datePicker.getModel().getValue();
-						Date selectedDate = selectedValue.getTime();
+						//DatePicker output
+						selectedDate = (Date) datePicker.getModel().getValue();
+						ConvertDate.toCalendar(selectedDate);
+						
 						System.out.println("Titel: "+eventTitle.getText());
-						System.out.println("Event datum: "+selectedDate);
+						System.out.println("Event datum: "+ConvertDate.formattedDate);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+selectedDate+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+ConvertDate.formattedDate+"&eventInfoSend="+eventInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -471,16 +473,17 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
 		});
 	}
 	
-	public void createNotice()
+	public void createNotice()	//TODO createNotice
 	{
-		noticeTitleLabel = new JLabel("Titel på event: ");
+		
+		noticeTitleLabel = new JLabel("Notistitel: ");
 		noticeDateTimeLabel = new JLabel("Datum och tid: ");
 		noticeInfoLabel = new JLabel("Beskrivning: ");
 		JButton submitNotice = new JButton("Skapa ny notis");
@@ -492,11 +495,11 @@ public class JavaWindow extends JFrame
 		noticeInfo.setWrapStyleWord(true);
 		noticeInfo.setRows(10);
 
-		add(datePicker);
+		
 		add(noticeTitleLabel);
 		add(noticeTitle);
 		add(noticeDateTimeLabel);
-		add(noticeDateTime);
+		add(datePicker);
 		add(noticeInfoLabel);
 		add(noticeInfo);
 		add(submitNotice);
@@ -509,16 +512,16 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					if(!noticeTitle.getText().isEmpty()&&!noticeDateTime.getText().isEmpty())
+					if(!noticeTitle.getText().isEmpty())
 					{
 						// Get datepicker output
-						Calendar selectedValue = (Calendar) datePicker.getModel().getValue();
-						Date selectedDate = selectedValue.getTime();
+						selectedDate = (Date) datePicker.getModel().getValue();
+						ConvertDate.toCalendar(selectedDate);
 						
 						System.out.println("Name: "+noticeTitle.getText());
-						System.out.println("Event datum: "+selectedDate);
+						System.out.println("Event datum: "+ConvertDate.formattedDate);
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
-						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+selectedDate+"&noticeInfoSend="+noticeInfo.getText();
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+ConvertDate.formattedDate+"&noticeInfoSend="+noticeInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -534,7 +537,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
