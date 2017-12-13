@@ -80,10 +80,11 @@ public class JavaWindow extends JFrame
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
 		str = str.replaceAll(" ", "%20");
 		String returnValue = db(str);
-		System.out.println(returnValue);
+		calendars.put("kalendrar", returnValue.split(" "));
+		System.out.println(calendars);
 		String[] calendarArr = returnValue.split(" ");
 		int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
-		System.out.println(tempArray+" "+calendarArr);
+		
 		
 		// *** Create colors ***
 		Color darkGray = new Color(30,30,30);
@@ -124,11 +125,14 @@ public class JavaWindow extends JFrame
 		
 		System.out.println(tempArray.length);
 		
-		for(int i = 1; i <= tempArray.length; i++)
+		for(int i : tempArray)
 		{
-			int num=i-1;
-			leftSide.add(calendarListItem = new JButton(""+num));
-			calendarListItem.setText("Test "+i);
+			String calendarIdSend = "http://localhost/kalendersystem/getCalendarName.php?calendarIdSend="+i;
+			calendarIdSend = calendarIdSend.replaceAll(" ", "%20");
+			String calenderName = db(calendarIdSend);
+			System.out.println(calenderName);
+			leftSide.add(calendarListItem = new JButton(""+calenderName));
+			calendarListItem.setText(""+calenderName);
 			calendarListItem.setPreferredSize(new Dimension(140,25));
 			calendarListItem.setBorderPainted(false);
 			calendarListItem.setContentAreaFilled(false);
