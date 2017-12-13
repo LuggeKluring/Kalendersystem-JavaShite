@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,6 +31,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import org.json.JSONObject;
+
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.components.TimePicker;
+import com.github.lgooddatepicker.components.TimePickerSettings;
+
+
+
+
+
 @SuppressWarnings("serial")
 
 
@@ -43,8 +52,9 @@ public class JavaWindow extends JFrame
 		this.setLocationRelativeTo(null);
 	}
 	
-	
 	public static String Username;
+	public int textAreaLimit = 200;
+	public int userId;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -69,10 +79,18 @@ public class JavaWindow extends JFrame
 	JButton calendarListItem = new JButton("Test ");
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
-	public int textAreaLimit = 200;
-	public int userId;
+	Font roboto = new Font("Roboto", Font.PLAIN, 13);
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
+	/***DatePicker***/
+	DatePickerSettings dateSettings = new DatePickerSettings();
+	TimePickerSettings timeSettings = new TimePickerSettings();
+	DatePicker datePicker = new DatePicker();
+	TimePicker timePicker = new TimePicker();
+	public static String selectedDate;
+	public static String selectedTime;
+	
+	public String date;
 
 		//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow(JSONObject loggedUser) 
@@ -108,7 +126,8 @@ public class JavaWindow extends JFrame
 		topSide.setBackground(darkGray);
 		topSide.setVisible(true);
 		topSide.setForeground(new Color(255,255,255));
-		
+		topSide.add(createEvent);
+		topSide.add(createNotice);
 
 		//rightSide -------
 		rightSide.setPreferredSize(new Dimension(750, 500));
@@ -123,6 +142,7 @@ public class JavaWindow extends JFrame
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
 		
+
 		System.out.println(tempArray.length);
 		
 		for(int i : tempArray)
@@ -141,9 +161,6 @@ public class JavaWindow extends JFrame
 			calendarListItem.setBackground(null);
 			System.out.println(i);
 		}
-		
-		leftSide.add(createEvent);
-		leftSide.add(createNotice);
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
 		leftSide.setVisible(true);
@@ -152,20 +169,20 @@ public class JavaWindow extends JFrame
 		createCalendar.setBorderPainted(false);
 		createCalendar.setContentAreaFilled(false);
 		createCalendar.setForeground(new Color(255,255,255));
-		createCalendar.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createCalendar.setFont(roboto);
 		createCalendar.setBackground(null);
 
 		createEvent.setPreferredSize(new Dimension(140,25));
 		createEvent.setBorderPainted(false);
 		createEvent.setContentAreaFilled(false);
 		createEvent.setForeground(new Color(255,255,255));
-		createEvent.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createEvent.setFont(roboto);
 		createEvent.setBackground(null);
 		createNotice.setPreferredSize(new Dimension(140,25));
 		createNotice.setBorderPainted(false);
 		createNotice.setContentAreaFilled(false);
 		createNotice.setForeground(new Color(255,255,255));
-		createNotice.setFont(new Font("Roboto", Font.PLAIN, 13));
+		createNotice.setFont(roboto);
 		createNotice.setBackground(null);
 		leftSide.setForeground(new Color(255,255,255));
 
@@ -190,8 +207,8 @@ public class JavaWindow extends JFrame
 				dayButton.setBackground(null);
 				dayButton.setBorderPainted(true);
 			}
+			
 		month.add(dayGrid);
-		
 		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
 		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
 		UIManager.put("TabbedPane.foreground", Color.lightGray); //ändrar färgen på texten till ljus grå
@@ -234,7 +251,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -250,7 +267,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -266,7 +283,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception createEr) 
 				{
-					// TODO Auto-generated catch block
+					
 					createEr.printStackTrace();
 				}
 			}
@@ -341,7 +358,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
@@ -377,7 +394,7 @@ public class JavaWindow extends JFrame
 		} 
 		catch (Exception e) 
 		{
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return "";
@@ -420,15 +437,20 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
 		});
 	}
 	
-	public void createEvent()
-	{
+	public void createEvent() //TODO createEvent
+	{	
+		dateSettings = new DatePickerSettings();
+	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    datePicker = new DatePicker(dateSettings);
+	    timePicker = new TimePicker(timeSettings);
 		eventTitleLabel = new JLabel("Titel på event: ");
 		eventDateTimeLabel = new JLabel("Datum och tid: ");
 		eventInfoLabel = new JLabel("Om event: ");
@@ -440,11 +462,13 @@ public class JavaWindow extends JFrame
 		eventInfo.setLineWrap(true);
 		eventInfo.setWrapStyleWord(true);
 		eventInfo.setRows(10);
-		
 		add(eventTitleLabel);
 		add(eventTitle);
 		add(eventDateTimeLabel);
-		add(eventDateTime);
+		add(datePicker);
+		add(timePicker);
+		
+		//add(eventDateTime);
 		add(eventInfoLabel);
 		add(eventInfo);
 		add(submitEvent);
@@ -457,12 +481,16 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					if(!eventTitle.getText().isEmpty()&&!eventDateTime.getText().isEmpty())
+					if(!eventTitle.getText().isEmpty())
 					{
+						//DatePicker output
+						selectedDate = datePicker.getDateStringOrEmptyString();
+						selectedTime = timePicker.getTimeStringOrEmptyString();
+						
 						System.out.println("Titel: "+eventTitle.getText());
-						System.out.println("Event datum: "+eventDateTime.getText());
+						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+eventDateTime.getText()+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&eventInfoSend="+eventInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -478,16 +506,21 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
 		});
 	}
 	
-	public void createNotice()
+	public void createNotice()	//TODO createNotice
 	{
-		noticeTitleLabel = new JLabel("Titel på event: ");
+		dateSettings = new DatePickerSettings();
+	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    datePicker = new DatePicker(dateSettings);
+	    timePicker = new TimePicker(timeSettings);
+		noticeTitleLabel = new JLabel("Notistitel: ");
 		noticeDateTimeLabel = new JLabel("Datum och tid: ");
 		noticeInfoLabel = new JLabel("Beskrivning: ");
 		JButton submitNotice = new JButton("Skapa ny notis");
@@ -498,11 +531,13 @@ public class JavaWindow extends JFrame
 		noticeInfo.setLineWrap(true);
 		noticeInfo.setWrapStyleWord(true);
 		noticeInfo.setRows(10);
+
 		
 		add(noticeTitleLabel);
 		add(noticeTitle);
 		add(noticeDateTimeLabel);
-		add(noticeDateTime);
+		add(datePicker);
+		add(timePicker);
 		add(noticeInfoLabel);
 		add(noticeInfo);
 		add(submitNotice);
@@ -515,12 +550,17 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
-					if(!noticeTitle.getText().isEmpty()&&!noticeDateTime.getText().isEmpty())
+					if(!noticeTitle.getText().isEmpty())
 					{
+						// Get datepicker output
+						selectedDate = datePicker.getDateStringOrEmptyString();
+						selectedTime = timePicker.getTimeStringOrEmptyString();
+						//ConvertDate.toCalendar(selectedDate);
+						
 						System.out.println("Name: "+noticeTitle.getText());
-						System.out.println("Event datum: "+noticeDateTime.getText());
+						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
-						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+noticeDateTime.getText()+"&noticeInfoSend="+noticeInfo.getText();
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&noticeInfoSend="+noticeInfo.getText();
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -536,7 +576,7 @@ public class JavaWindow extends JFrame
 				} 
 				catch (Exception er) 
 				{
-					// TODO Auto-generated catch block
+					
 					er.printStackTrace();
 				}
 			}
