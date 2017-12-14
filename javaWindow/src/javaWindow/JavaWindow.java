@@ -54,7 +54,7 @@ public class JavaWindow extends JFrame
 	
 	public static String Username;
 	public int textAreaLimit = 200;
-	public int userId;
+	public static int userId;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -150,7 +150,6 @@ public class JavaWindow extends JFrame
 			String calendarIdSend = "http://localhost/kalendersystem/getCalendarName.php?calendarIdSend="+i;
 			calendarIdSend = calendarIdSend.replaceAll(" ", "%20");
 			String calenderName = db(calendarIdSend);
-			System.out.println(calenderName);
 			leftSide.add(calendarListItem = new JButton(""+calenderName));
 			calendarListItem.setText(""+calenderName);
 			calendarListItem.setPreferredSize(new Dimension(140,25));
@@ -159,7 +158,23 @@ public class JavaWindow extends JFrame
 			calendarListItem.setForeground(new Color(255,255,255));
 			calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
 			calendarListItem.setBackground(null);
-			System.out.println(i);
+			calendarListItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent create) 
+				{
+					try 
+					{
+						String calendarPermission = "http://localhost/kalendersystem/calendarPermission.php?userSend="+userId+"&calendarIdSend="+i;
+						calendarPermission = calendarPermission.replaceAll(" ", "%20");
+						String permission = db(calendarPermission);
+					} 
+					catch (Exception createEr) 
+					{
+						
+						createEr.printStackTrace();
+					}
+				}
+			});
 		}
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
@@ -321,6 +336,7 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
+					Username=txt.getText();
 					loggedUser.put("username",txt.getText());
 					//omvandlar lösenord till en string
 					char[] pswChar = pass.getPassword();
@@ -422,7 +438,7 @@ public class JavaWindow extends JFrame
 					if(!calendarName.getText().isEmpty())
 					{
 						System.out.println("Name: "+calendarName.getText());
-						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+"&calendarNameSend="+calendarName.getText();
+						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+"&calendarNameSend="+calendarName.getText()+"&userSend="+userId;
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
