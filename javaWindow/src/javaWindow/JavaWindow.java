@@ -11,7 +11,11 @@ import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +28,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 //import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -36,22 +41,18 @@ import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
-
-
-
-
+import com.github.lgooddatepicker.components.TimePickerSettings.TimeIncrement;
 
 @SuppressWarnings("serial")
-
-
 public class JavaWindow extends JFrame
 {
 	public JavaWindow() {
+		
 		super("Kalender");
 		this.pack();
-		this.setLocationRelativeTo(null);
-	}
-	
+		this.setLocation(250, 150);;
+		
+	}	
 	public static String Username;
 	public int textAreaLimit = 200;
 	public int userId;
@@ -89,10 +90,12 @@ public class JavaWindow extends JFrame
 	TimePicker timePicker = new TimePicker();
 	public static String selectedDate;
 	public static String selectedTime;
+	public static int monthNum;
+	public static Calendar c = Calendar.getInstance();
+	public static JButton dayButton;
+	public static JPanel dayGrid = new JPanel(new GridLayout(0,7));
 	
-	public String date;
-
-		//Ritar ut fönstret efter att lyckats logga in
+	//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow(JSONObject loggedUser) 
 	{
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
@@ -184,30 +187,102 @@ public class JavaWindow extends JFrame
 		createNotice.setForeground(new Color(255,255,255));
 		createNotice.setFont(roboto);
 		createNotice.setBackground(null);
-		leftSide.setForeground(new Color(255,255,255));
-
-		
+		leftSide.setForeground(new Color(255,255,255));	
 		welcometxt.setForeground(new Color(255,255,255));
 		rightTxt.setForeground(new Color(255,255,255));
-		
-		
-		
 		//JTabbedPane ------
 		month.setBackground(gray);
 		week.setBackground(gray);
 		day.setBackground(gray);
 		//dayGrid - Skapar rutnätet med dagar 
-		JPanel dayGrid = new JPanel(new GridLayout(4,7,15,15));
-			JButton dayButton;
-			for(int i=0 ; i<35 ; i++) {
-				int num = i+1;
-				dayGrid.add(dayButton = new JButton(""+num));
-				dayButton.setPreferredSize(new Dimension(60, 60));
-				dayButton.setContentAreaFilled(false);
-				dayButton.setBackground(null);
-				dayButton.setBorderPainted(true);
-			}
+		
+		
+//		for(int w=0; w<5; w++) {
+//			for(int d=0; d<7; d++) {
+//				dayGrid.add(dayButton = new JButton());
+//				dayButton.setPreferredSize(new Dimension(60,60));
+//			}
+//		}
+		//
+		//************* DayGrid ****************
+		//
+		dayGrid.setBackground(new Color(0,0,0,0));
+		Dimension dayGridSize = new Dimension(650, 400);
+		dayGrid.setPreferredSize(dayGridSize);
+		Date dayGridDate = new Date();
+		drawDayGrid();
+		
+		c.setTime(dayGridDate);
+			//******* monthPicker *******
+			JPanel monthPicker = new JPanel(new BorderLayout());
+			JPanel days = new JPanel(new GridLayout());
+			monthPicker.setPreferredSize(new Dimension(650,60));
+//			monthNum = c.get(Calendar.MONTH);
+			String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+			JLabel selectedMonthLabel = new JLabel(monthNames[monthNum], SwingConstants.CENTER);
 			
+			JButton nextBtn = new JButton(">");
+				nextBtn.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent create) 
+					{
+						try 
+						{
+							monthNum++;
+							c.set(Calendar.MONTH, monthNum);
+							System.out.println(c.get(Calendar.MONTH));
+							selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]);
+//							selectedMonthLabel.setText(monthNames[monthNum]);
+							drawDayGrid();
+							
+						} 
+						catch (Exception createEr) 
+						{
+							
+							createEr.printStackTrace();
+						}
+					}
+				});
+			JButton prevBtn = new JButton("<");
+				prevBtn.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent create) 
+					{
+						try 
+						{
+							monthNum--;
+							c.set(Calendar.MONTH, monthNum);
+							System.out.println(c.get(Calendar.MONTH));
+							selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]);
+							drawDayGrid();
+						} 
+						catch (Exception createEr) 
+						{
+							
+							createEr.printStackTrace();
+						}
+					}
+				});
+			
+			JLabel mon = new JLabel("Mån", SwingConstants.CENTER);
+			JLabel tue = new JLabel("Tis", SwingConstants.CENTER);
+			JLabel wed = new JLabel("Ons", SwingConstants.CENTER);
+			JLabel thu = new JLabel("Tor", SwingConstants.CENTER);
+			JLabel fri = new JLabel("Fre", SwingConstants.CENTER);
+			JLabel sat = new JLabel("Lör", SwingConstants.CENTER);
+			JLabel sun = new JLabel("Sön", SwingConstants.CENTER);
+			days.add(mon);
+			days.add(tue);
+			days.add(wed);
+			days.add(thu);
+			days.add(fri);
+			days.add(sat);
+			days.add(sun);
+			monthPicker.add(prevBtn, BorderLayout.WEST);
+			monthPicker.add(selectedMonthLabel);
+			monthPicker.add(nextBtn, BorderLayout.EAST);
+			monthPicker.add(days, BorderLayout.SOUTH);
+		month.add(monthPicker);
 		month.add(dayGrid);
 		rightSide.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); //sätter tabbarna till högra sidan
 		rightSide.setBorder(BorderFactory.createLineBorder(Color.darkGray, 0)); //Försöker sätta border color
@@ -239,8 +314,7 @@ public class JavaWindow extends JFrame
 		add(leftSide, BorderLayout.WEST);
 		add(rightSide, BorderLayout.CENTER);
 		setSize(1000, 600); 
-		setVisible(true);
-		
+		setVisible(true);		
 		createCalendar.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent create) 
@@ -255,8 +329,7 @@ public class JavaWindow extends JFrame
 					createEr.printStackTrace();
 				}
 			}
-		});
-		
+		});		
 		createEvent.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent create) 
@@ -271,8 +344,7 @@ public class JavaWindow extends JFrame
 					createEr.printStackTrace();
 				}
 			}
-		});
-		
+		});		
 		createNotice.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent create) 
@@ -287,13 +359,49 @@ public class JavaWindow extends JFrame
 					createEr.printStackTrace();
 				}
 			}
-		});
-		
+		});		
 		//db();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
 	}	
-	
+	public void drawDayGrid() {
+		dayGrid.removeAll();
+		c.set(Calendar.DAY_OF_MONTH, 1);
+		  int skipDays = 0;
+		  switch (c.get(Calendar.DAY_OF_WEEK)) {
+		  case Calendar.MONDAY:
+		    skipDays = 1;
+		    break;
+		  case Calendar.TUESDAY:
+		    skipDays = 2;
+		    break;
+		  case Calendar.WEDNESDAY:
+		    skipDays = 3;
+		    break;
+		  case Calendar.THURSDAY:
+		    skipDays = 4;
+		    break;
+		  case Calendar.FRIDAY:
+		    skipDays = 5;
+		    break;
+		  case Calendar.SATURDAY:
+		    skipDays = 6;
+		    break;
+		  default:
+		  }
+		  for (int i = 1; i < skipDays; i++) {
+		    dayGrid.add(dayButton = new JButton("")); 
+		    dayButton.setPreferredSize(new Dimension(60,60));
+		    dayButton.setBorderPainted(false);
+		  }
+		  int maxDay = c.getMaximum(Calendar.DAY_OF_MONTH);
+		  for (int i = 1; i <= maxDay; i++) {
+		    dayGrid.add(dayButton = new JButton(String.valueOf(i)));
+		    dayButton.setPreferredSize(new Dimension(60,60));
+		    dayButton.setBorderPainted(false);
+		  }
+		  super.pack();
+		  super.repaint();
+	}
 	//skapar login-rutan
 	public void start() {
 		label = new JLabel("Användarnamn: ");
@@ -362,18 +470,11 @@ public class JavaWindow extends JFrame
 					er.printStackTrace();
 				}
 			}
-		});
-		
+		});	
 		setSize(800, 400);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-	}
-	
-	public void getCalendars() {
-		
-		
-		
-	}
+	}	
 	//Detta är metoden får koppling till php filen, denna ser även till så att vi får returned data. 
 	public String db(String link) 
 	{
@@ -449,6 +550,10 @@ public class JavaWindow extends JFrame
 		dateSettings = new DatePickerSettings();
 	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
 	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    timeSettings.use24HourClockFormat();
+	    timeSettings.setDisplaySpinnerButtons(true);
+	    timeSettings.initialTime = LocalTime.now();
+	    timeSettings.generatePotentialMenuTimes(TimeIncrement.FifteenMinutes, null, null);
 	    datePicker = new DatePicker(dateSettings);
 	    timePicker = new TimePicker(timeSettings);
 		eventTitleLabel = new JLabel("Titel på event: ");
@@ -518,6 +623,10 @@ public class JavaWindow extends JFrame
 		dateSettings = new DatePickerSettings();
 	    dateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
 	    timeSettings.setFormatForDisplayTime("hh:mm");
+	    timeSettings.use24HourClockFormat();
+	    timeSettings.setDisplaySpinnerButtons(true);
+	    timeSettings.initialTime = LocalTime.now();
+	    timeSettings.generatePotentialMenuTimes(TimeIncrement.FifteenMinutes, null, null);
 	    datePicker = new DatePicker(dateSettings);
 	    timePicker = new TimePicker(timeSettings);
 		noticeTitleLabel = new JLabel("Notistitel: ");
