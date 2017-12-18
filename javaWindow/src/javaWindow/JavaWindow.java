@@ -55,6 +55,8 @@ public class JavaWindow extends JFrame
 	public static String Username;
 	public int textAreaLimit = 200;
 	public static int userId;
+	public static int tempUserId=0;
+	public static int numbrsOfCalendars = 0;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -144,6 +146,7 @@ public class JavaWindow extends JFrame
 		
 
 		System.out.println(tempArray.length);
+		numbrsOfCalendars=tempArray.length;
 		
 		for(int i : tempArray)
 		{
@@ -354,8 +357,9 @@ public class JavaWindow extends JFrame
 						if(!returnValue.equals("0")) 
 						{
 							//Kallar på metoden som ritar ut kalender fönstret 
-							new JavaWindow().drawMainWindow(loggedUser);
+							tempUserId= Integer.parseInt(returnValue);
 							userId= Integer.parseInt(returnValue);
+							new JavaWindow().drawMainWindow(loggedUser);
 							dispose();
 						}	
 						//Om värdet man får tillbaka från php filen är något annat än 1
@@ -437,8 +441,12 @@ public class JavaWindow extends JFrame
 				{
 					if(!calendarName.getText().isEmpty())
 					{
+						System.out.println("userId="+userId+" "+"numbers="+numbrsOfCalendars);
+						int calendarIdCreate = tempUserId*1000+numbrsOfCalendars;
+						System.out.println(calendarIdCreate);
 						System.out.println("Name: "+calendarName.getText());
-						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+"&calendarNameSend="+calendarName.getText()+"&userSend="+userId;
+						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+
+								"&calendarNameSend="+calendarName.getText()+"&userSend="+userId+"&calendarIdSend="+calendarIdCreate;
 						str = str.replaceAll(" ", "%20");
 						System.out.println(str);
 						String returnValue = db(str);
