@@ -55,7 +55,9 @@ public class JavaWindow extends JFrame
 	}	
 	public static String Username;
 	public int textAreaLimit = 200;
-	public int userId;
+	public static int userId;
+	public static int tempUserId=0;
+	public static int numbrsOfCalendars = 0;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -101,10 +103,6 @@ public class JavaWindow extends JFrame
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
 		str = str.replaceAll(" ", "%20");
 		String returnValue = db(str);
-		calendars.put("kalendrar", returnValue.split(" "));
-		System.out.println(calendars);
-		String[] calendarArr = returnValue.split(" ");
-		int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
 		
 		
 		// *** Create colors ***
@@ -145,24 +143,43 @@ public class JavaWindow extends JFrame
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
 		
-
-		System.out.println(tempArray.length);
-		
-		for(int i : tempArray)
+		if(!returnValue.isEmpty())
 		{
-			String calendarIdSend = "http://localhost/kalendersystem/getCalendarName.php?calendarIdSend="+i;
-			calendarIdSend = calendarIdSend.replaceAll(" ", "%20");
-			String calenderName = db(calendarIdSend);
-			System.out.println(calenderName);
-			leftSide.add(calendarListItem = new JButton(""+calenderName));
-			calendarListItem.setText(""+calenderName);
-			calendarListItem.setPreferredSize(new Dimension(140,25));
-			calendarListItem.setBorderPainted(false);
-			calendarListItem.setContentAreaFilled(false);
-			calendarListItem.setForeground(new Color(255,255,255));
-			calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
-			calendarListItem.setBackground(null);
-			System.out.println(i);
+			calendars.put("kalendrar", returnValue.split(" "));
+			String[] calendarArr = returnValue.split(" ");
+			int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
+			numbrsOfCalendars=tempArray.length;
+			for(int i : tempArray)
+			{
+				String calendarIdSend = "http://localhost/kalendersystem/getCalendarName.php?calendarIdSend="+i;
+				calendarIdSend = calendarIdSend.replaceAll(" ", "%20");
+				String calenderName = db(calendarIdSend);
+				leftSide.add(calendarListItem = new JButton(""+calenderName));
+				calendarListItem.setText(""+calenderName);
+				calendarListItem.setPreferredSize(new Dimension(140,25));
+				calendarListItem.setBorderPainted(false);
+				calendarListItem.setContentAreaFilled(false);
+				calendarListItem.setForeground(new Color(255,255,255));
+				calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
+				calendarListItem.setBackground(null);
+				calendarListItem.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent create) 
+					{
+						try 
+						{
+							String calendarPermission = "http://localhost/kalendersystem/calendarPermission.php?userSend="+userId+"&calendarIdSend="+i;
+							calendarPermission = calendarPermission.replaceAll(" ", "%20");
+							String permission = db(calendarPermission);
+						} 
+						catch (Exception createEr) 
+						{
+							
+							createEr.printStackTrace();
+						}
+					}
+				});
+			}
 		}
 		leftSide.setPreferredSize(new Dimension(250, 500));
 		leftSide.setBackground(darkGray);
@@ -429,6 +446,7 @@ public class JavaWindow extends JFrame
 			{
 				try 
 				{
+					Username=txt.getText();
 					loggedUser.put("username",txt.getText());
 					//omvandlar lösenord till en string
 					char[] pswChar = pass.getPassword();
@@ -438,7 +456,6 @@ public class JavaWindow extends JFrame
 					String str = "http://localhost/kalendersystem/kalendersystem.php?userCredSend="+loggedUser;
 					str = str.replaceAll(" ", "%20");
 					String returnValue = db(str);
-					System.out.println(loggedUser);
 					//kollar om fälterna är tomma eller ej
 				    if (!txt.getText().isEmpty() && !pswString.isEmpty()) 
 				    {
@@ -446,8 +463,9 @@ public class JavaWindow extends JFrame
 						if(!returnValue.equals("0")) 
 						{
 							//Kallar på metoden som ritar ut kalender fönstret 
-							new JavaWindow().drawMainWindow(loggedUser);
+							tempUserId= Integer.parseInt(returnValue);
 							userId= Integer.parseInt(returnValue);
+							new JavaWindow().drawMainWindow(loggedUser);
 							dispose();
 						}	
 						//Om värdet man får tillbaka från php filen är något annat än 1
@@ -490,7 +508,6 @@ public class JavaWindow extends JFrame
 				data=data+((char) getData.read());
 			}
 			getData.close();	
-			System.out.println(data);
 			return data;
 		} 
 		catch (Exception e) 
@@ -503,7 +520,6 @@ public class JavaWindow extends JFrame
 
 	public void createCalendar()
 	{
-		System.out.println(Username);
 		calendarNameLabel = new JLabel("Kalender namn: ");
 		JButton submitCalendarName = new JButton("Skapa kalender");
 		calendarName.setPreferredSize(new Dimension(200,30));
@@ -522,12 +538,11 @@ public class JavaWindow extends JFrame
 				{
 					if(!calendarName.getText().isEmpty())
 					{
-						System.out.println("Name: "+calendarName.getText());
-						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+"&calendarNameSend="+calendarName.getText();
+						int calendarIdCreate = tempUserId*1000+numbrsOfCalendars;
+						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+
+								"&calendarNameSend="+calendarName.getText()+"&userSend="+userId+"&calendarIdSend="+calendarIdCreate;
 						str = str.replaceAll(" ", "%20");
-						System.out.println(str);
 						String returnValue = db(str);
-						System.out.println(returnValue);
 						dispose();
 						JOptionPane.showMessageDialog(null, "Kalendern '"+calendarName.getText()+"' är skapad!");
 					}
