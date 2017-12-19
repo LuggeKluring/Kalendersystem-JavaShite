@@ -58,6 +58,7 @@ public class JavaWindow extends JFrame
 	public static int userId;
 	public static int tempUserId=0;
 	public static int numbrsOfCalendars = 0;
+	public static int currentCalendar = 0;
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -162,6 +163,7 @@ public class JavaWindow extends JFrame
 				calendarListItem.setForeground(new Color(255,255,255));
 				calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
 				calendarListItem.setBackground(null);
+				currentCalendar=i;
 				calendarListItem.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent create) 
@@ -169,8 +171,12 @@ public class JavaWindow extends JFrame
 						try 
 						{
 							String calendarPermission = "http://localhost/kalendersystem/calendarPermission.php?userSend="+userId+"&calendarIdSend="+i;
+							currentCalendar=i;
 							calendarPermission = calendarPermission.replaceAll(" ", "%20");
 							String permission = db(calendarPermission);
+							System.out.println(permission);
+							new JavaWindow().getEvent();
+							new JavaWindow().getNotices();
 						} 
 						catch (Exception createEr) 
 						{
@@ -610,7 +616,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Titel: "+eventTitle.getText());
 						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+eventInfo.getText());
-						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+"&eventDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&eventInfoSend="+eventInfo.getText();
+						String str = "http://localhost/kalendersystem/createEvent.php?eventTitleSend="+eventTitle.getText()+
+								"&eventDateSend="+selectedDate+"%20"+selectedTime+"&eventInfoSend="+eventInfo.getText()+"&calendarIdSend="+currentCalendar;
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -684,7 +691,8 @@ public class JavaWindow extends JFrame
 						System.out.println("Name: "+noticeTitle.getText());
 						System.out.println("Event datum: "+selectedDate/*ConvertDate.formattedDate*/);
 						System.out.println("Event beskrivning: "+noticeInfo.getText());
-						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+selectedDate/*ConvertDate.formattedDate*/+"%20"+selectedTime+"&noticeInfoSend="+noticeInfo.getText();
+						String str = "http://localhost/kalendersystem/createNotice.php?noticeTitleSend="+noticeTitle.getText()+"&noticeDateSend="+
+								selectedDate+"%20"+selectedTime+"&noticeInfoSend="+noticeInfo.getText()+"&calendarIdSend="+currentCalendar;
 						str = str.replaceAll("\n", "%0A");
 						str = str.replaceAll("\t", "%09");
 						str = str.replaceAll(" ", "%20");
@@ -706,7 +714,22 @@ public class JavaWindow extends JFrame
 			}
 		});
 	}
-
+		
+	public void getEvent()
+	{
+		String eventData = "http://localhost/kalendersystem/getEvents.php?calendarIdSend="+currentCalendar;
+		eventData = eventData.replaceAll(" ", "%20");
+		String detEventData = db(eventData);
+		System.out.println(detEventData);
+	}
+	
+	public void getNotices()
+	{
+		String noticeData = "http://localhost/kalendersystem/getNotices.php?calendarIdSend="+currentCalendar;
+		noticeData = noticeData.replaceAll(" ", "%20");
+		String getEventData = db(noticeData);
+		System.out.println(getEventData);
+	}
 
 	public static void main(String[] args) {
 		try {
