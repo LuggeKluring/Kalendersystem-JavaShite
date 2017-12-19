@@ -233,16 +233,14 @@ public class JavaWindow extends JFrame
 		Dimension dayGridSize = new Dimension(650, 400);
 		dayGrid.setPreferredSize(dayGridSize);
 		Date dayGridDate = new Date();
-		drawDayGrid();
-		
 		c.setTime(dayGridDate);
+		drawDayGrid();
 			//******* monthPicker *******
 			JPanel monthPicker = new JPanel(new BorderLayout());
 			JPanel days = new JPanel(new GridLayout());
 			monthPicker.setPreferredSize(new Dimension(650,60));
-//			monthNum = c.get(Calendar.MONTH);
 			String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-			JLabel selectedMonthLabel = new JLabel(monthNames[monthNum], SwingConstants.CENTER);
+			JLabel selectedMonthLabel = new JLabel(monthNames[monthNum]+"\t"+c.get(Calendar.YEAR), SwingConstants.CENTER);
 			
 			JButton nextBtn = new JButton(">");
 				nextBtn.addActionListener(new ActionListener()
@@ -251,13 +249,11 @@ public class JavaWindow extends JFrame
 					{
 						try 
 						{
-							monthNum++;
-							c.set(Calendar.MONTH, monthNum);
-							System.out.println(c.get(Calendar.MONTH));
-							selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]);
-//							selectedMonthLabel.setText(monthNames[monthNum]);
-							drawDayGrid();
-							
+								c.add(Calendar.MONTH, 1);
+								System.out.println("---Framåt---");
+								System.out.println("Månad: "+c.get(Calendar.MONTH)+"	"+"År: "+c.get(Calendar.YEAR));
+								selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]+c.get(Calendar.YEAR));
+								drawDayGrid();
 						} 
 						catch (Exception createEr) 
 						{
@@ -273,10 +269,11 @@ public class JavaWindow extends JFrame
 					{
 						try 
 						{
-							monthNum--;
-							c.set(Calendar.MONTH, monthNum);
-							System.out.println(c.get(Calendar.MONTH));
-							selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]);
+							
+							c.add(Calendar.MONTH, -1);
+							System.out.println("---Bakåt---");
+							System.out.println("Månad: "+c.get(Calendar.MONTH)+"	"+"År: "+c.get(Calendar.YEAR));
+							selectedMonthLabel.setText(monthNames[c.get(Calendar.MONTH)]+c.get(Calendar.YEAR));
 							drawDayGrid();
 						} 
 						catch (Exception createEr) 
