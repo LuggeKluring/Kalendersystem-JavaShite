@@ -584,6 +584,7 @@ public class JavaWindow extends JFrame
 						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+
 								"&calendarNameSend="+calendarName.getText()+"&userSend="+userId+"&calendarIdSend="+calendarIdCreate;
 						str = str.replaceAll(" ", "%20");
+						db(str);
 						dispose();
 						JOptionPane.showMessageDialog(null, "Kalendern '"+calendarName.getText()+"' är skapad!");
 					}
