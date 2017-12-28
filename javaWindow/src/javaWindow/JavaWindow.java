@@ -43,9 +43,11 @@ import com.github.lgooddatepicker.components.TimePicker;
 import com.github.lgooddatepicker.components.TimePickerSettings;
 import com.github.lgooddatepicker.components.TimePickerSettings.TimeIncrement;
 
+//Main javaklassen för kalendersystemet där just nu i stortsett allt händer. 
 @SuppressWarnings("serial")
 public class JavaWindow extends JFrame
 {
+	//funktion för fönster som används till att starta andra funktioner
 	public JavaWindow() {
 		
 		super("Kalender");
@@ -53,12 +55,18 @@ public class JavaWindow extends JFrame
 		this.setLocation(250, 150);;
 		
 	}	
+	//skapandet av publika variablar
+	
+	//int
 	public static String Username;
 	public int textAreaLimit = 200;
 	public static int userId;
 	public static int tempUserId=0;
 	public static int numbrsOfCalendars = 0;
 	public static int currentCalendar = 0;
+	public static int monthNum;
+	
+	//JLabel
 	JLabel label;
 	JLabel pwdLabel;
 	JLabel welcometxt;
@@ -70,20 +78,33 @@ public class JavaWindow extends JFrame
 	JLabel noticeTitleLabel;
 	JLabel noticeDateTimeLabel;
 	JLabel noticeInfoLabel;
+	
+	//JTextField
 	JTextField txt = new JTextField();
 	JTextField calendarName = new JTextField();
 	JTextField eventTitle = new JTextField();
 	JTextField eventDateTime = new JTextField();
 	JTextField noticeTitle = new JTextField();
 	JTextField noticeDateTime = new JTextField();
+	
+	//JPasswordField
 	JPasswordField pass = new JPasswordField();
+	
+	//JButton
 	JButton createCalendar = new JButton("+ Skapa ny kalender");
 	JButton createEvent = new JButton("+ Skapa nytt event");
 	JButton createNotice = new JButton("+ Skapa ny notis");
 	JButton calendarListItem = new JButton("Test ");
+	public static JButton dayButton;
+	
+	//JTextArea
 	JTextArea eventInfo = new JTextArea(30, 50);
 	JTextArea noticeInfo = new JTextArea(30, 50);
+	
+	//font
 	Font roboto = new Font("Roboto", Font.PLAIN, 13);
+	
+	//JSONObject
 	JSONObject loggedUser = new JSONObject();
 	JSONObject calendars = new JSONObject();
 	/***DatePicker***/
@@ -91,16 +112,21 @@ public class JavaWindow extends JFrame
 	TimePickerSettings timeSettings = new TimePickerSettings();
 	DatePicker datePicker = new DatePicker();
 	TimePicker timePicker = new TimePicker();
+	
+	//String
 	public static String selectedDate;
 	public static String selectedTime;
-	public static int monthNum;
-	public static Calendar c = Calendar.getInstance();
-	public static JButton dayButton;
+	
+	//JPanel
 	public static JPanel dayGrid = new JPanel(new GridLayout(0,7));
+	
+	//Calendar
+	public static Calendar c = Calendar.getInstance();
 	
 	//Ritar ut fönstret efter att lyckats logga in
 	public void drawMainWindow(JSONObject loggedUser) 
 	{
+		//Skapar kontakten till getCalendars.php som skall användas för att hämta kalendrarna för användaren.
 		String str = "http://localhost/kalendersystem/getCalendars.php?userCredSend="+loggedUser;
 		str = str.replaceAll(" ", "%20");
 		String returnValue = db(str);
@@ -112,7 +138,7 @@ public class JavaWindow extends JFrame
 		// ***
 		// *** Creates the JPanels and modifies them ***
 
-		
+		//skapandet utav JLabel, JPanel och JTabbedPane.
 		welcometxt = new JLabel("Dina kalendrar");
 		rightTxt = new JLabel("Höger textelement");
 		JPanel topSide = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -144,17 +170,24 @@ public class JavaWindow extends JFrame
 		welcometxt.setBorder(new EmptyBorder(10,10,10,10));
 		leftSide.add(createCalendar);
 		
+		//kollar om java får tillbaka ett svar eller ej.
 		if(!returnValue.isEmpty())
 		{
+			//Fixar formattet för värdena man får tillbaka
 			calendars.put("kalendrar", returnValue.split(" "));
 			String[] calendarArr = returnValue.split(" ");
 			int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
 			numbrsOfCalendars=tempArray.length;
+			
+			//går igenom alla kalendrar i arrayen.
 			for(int i : tempArray)
 			{
+				//Skickar kalenderid till getCalendarName för att hämta namnen på kalendrarna.
 				String calendarIdSend = "http://localhost/kalendersystem/getCalendarName.php?calendarIdSend="+i;
 				calendarIdSend = calendarIdSend.replaceAll(" ", "%20");
 				String calenderName = db(calendarIdSend);
+				
+				//lägger till nya knappar för antalet kalendrar
 				leftSide.add(calendarListItem = new JButton(""+calenderName));
 				calendarListItem.setText(""+calenderName);
 				calendarListItem.setPreferredSize(new Dimension(140,25));
@@ -163,13 +196,18 @@ public class JavaWindow extends JFrame
 				calendarListItem.setForeground(new Color(255,255,255));
 				calendarListItem.setFont(new Font("Roboto", Font.PLAIN, 13));
 				calendarListItem.setBackground(null);
+				
+				//Ger currentCalendar nuvarande kalender id
 				currentCalendar=i;
+				
+				//ger knapparna uppgifter de skall göra när man trycker på dem.
 				calendarListItem.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent create) 
 					{
 						try 
 						{
+							//skickar kalender id och användar id för att sedan få tillbaka personens behörighet. 
 							String calendarPermission = "http://localhost/kalendersystem/calendarPermission.php?userSend="+userId+"&calendarIdSend="+i;
 							currentCalendar=i;
 							calendarPermission = calendarPermission.replaceAll(" ", "%20");
@@ -545,7 +583,6 @@ public class JavaWindow extends JFrame
 						String str = "http://localhost/kalendersystem/calendarCreate.php?uNameSend="+Username+
 								"&calendarNameSend="+calendarName.getText()+"&userSend="+userId+"&calendarIdSend="+calendarIdCreate;
 						str = str.replaceAll(" ", "%20");
-						String returnValue = db(str);
 						dispose();
 						JOptionPane.showMessageDialog(null, "Kalendern '"+calendarName.getText()+"' är skapad!");
 					}
