@@ -237,6 +237,7 @@ public class JavaWindow extends JFrame
 		drawDayGrid();
 			//******* monthPicker *******
 			JPanel monthPicker = new JPanel(new BorderLayout());
+			monthNum = c.get(Calendar.MONTH);
 			JPanel days = new JPanel(new GridLayout());
 			monthPicker.setPreferredSize(new Dimension(650,60));
 			String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -333,7 +334,7 @@ public class JavaWindow extends JFrame
 		add(topSide, BorderLayout.NORTH);
 		add(leftSide, BorderLayout.WEST);
 		add(rightSide, BorderLayout.CENTER);
-		setSize(1000, 600); 
+		setSize(1300, 900);
 		setVisible(true);		
 		createCalendar.addActionListener(new ActionListener()
 		{
@@ -492,7 +493,7 @@ public class JavaWindow extends JFrame
 				}
 			}
 		});	
-		setSize(800, 400);
+		setSize(800, 100);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}	
