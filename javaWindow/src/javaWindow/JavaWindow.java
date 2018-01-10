@@ -705,8 +705,6 @@ public class JavaWindow extends JFrame
 			//Fixar formattet för värdena man får tillbaka
 			calendars.put("kalendrar", returnValue.split(" "));
 			String[] calendarArr = returnValue.split(" ");
-			JOptionPane.showMessageDialog(null, calendarArr);
-			JOptionPane.showMessageDialog(null, loggedUser);
 			int[] tempArray = Arrays.stream(calendarArr).mapToInt(Integer::parseInt).toArray();
 			numbrsOfCalendars=tempArray.length;
 			
