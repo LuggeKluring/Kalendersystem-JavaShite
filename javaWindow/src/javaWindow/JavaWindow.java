@@ -362,6 +362,7 @@ public class JavaWindow extends JFrame
 			}
 		});		
 		//db();
+		pack();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}	
 	public void drawDayGrid() {
@@ -415,6 +416,13 @@ public class JavaWindow extends JFrame
 		txt.setPreferredSize(new Dimension(200, 30));
 		pass.setPreferredSize(new Dimension(200, 30));
 		button.setPreferredSize(new Dimension(200,50));
+		
+		label.setForeground(Color.white);
+		pwdLabel.setForeground(Color.white);
+		txt.setBackground(Color.lightGray);
+		pass.setBackground(Color.lightGray);
+		getContentPane().setBackground(Color.darkGray);
+		
 		//Lägger till komponenter till fönstret
 		add(label);
 		add(txt);
@@ -508,6 +516,10 @@ public class JavaWindow extends JFrame
 		JButton submitCalendarName = new JButton("Skapa kalender");
 		calendarName.setPreferredSize(new Dimension(200,30));
 		submitCalendarName.setPreferredSize(new Dimension(200,50));
+		calendarNameLabel.setForeground(Color.white);
+		calendarName.setBackground(Color.lightGray);
+		getContentPane().setBackground(Color.darkGray);
+		
 		add(calendarNameLabel);
 		add(calendarName);
 		add(submitCalendarName);
@@ -543,6 +555,7 @@ public class JavaWindow extends JFrame
 				}
 			}
 		});
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	public void createEvent() //TODO createEvent
@@ -567,6 +580,12 @@ public class JavaWindow extends JFrame
 		eventInfo.setLineWrap(true);
 		eventInfo.setWrapStyleWord(true);
 		eventInfo.setRows(10);
+		
+		eventTitleLabel.setForeground(Color.white);
+		eventDateTimeLabel.setForeground(Color.white);
+		eventInfoLabel.setForeground(Color.white);
+		getContentPane().setBackground(Color.darkGray);
+		
 		add(eventTitleLabel);
 		add(eventTitle);
 		add(eventDateTimeLabel);
@@ -642,6 +661,10 @@ public class JavaWindow extends JFrame
 		noticeInfo.setWrapStyleWord(true);
 		noticeInfo.setRows(10);
 
+		noticeTitleLabel.setForeground(Color.white);
+		noticeDateTimeLabel.setForeground(Color.white);
+		noticeInfoLabel.setForeground(Color.white);
+		getContentPane().setBackground(Color.darkGray);
 		
 		add(noticeTitleLabel);
 		add(noticeTitle);
@@ -789,7 +812,5 @@ public class JavaWindow extends JFrame
 		
 		new JavaWindow().start();
 	}
-
-	
 }
 
